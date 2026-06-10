@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Session 8 of 11 — Capstone Demo Day | KP Academy</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+    .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 1px solid #1e293b; }
+    .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+    .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+    .header p { font-size: 15px; color: #64748b; }
+    .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+    .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+    .toc a:hover { background: #f1f5f9; color: #1e293b; }
+    .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+    .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+    .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+    .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+    .section-body { padding: 28px 32px; }
+    h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+    h3:first-child { margin-top: 0; }
+    p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+    p:last-child { margin-bottom: 0; }
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+    li strong { color: #0f172a; }
+    code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+    .code-block { position: relative; margin: 14px 0; }
+    pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+    pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+    .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+    .copy-btn:hover { background: #334155; color: #e2e8f0; }
+    .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+    .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+    .callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+    .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+    .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+    .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+    .step { display: flex; gap: 14px; align-items: flex-start; }
+    .step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+    .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+    .step-body strong { color: #0f172a; }
+    .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+    th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+    td strong { color: #0f172a; }
+    .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .pattern-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px 18px; background: #f8fafc; }
+    .pattern-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+    .pattern-card .card-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .pattern-card .value { font-size: 13px; color: #334155; line-height: 1.5; }
+    .pattern-card.killed .label { color: #10b981; }
+    .pattern-card.killed .card-title { color: #064e3b; }
+    .pattern-card.killed .value { color: #065f46; }
+    .pattern-card ol { padding-left: 18px; margin: 0; }
+    .pattern-card ol li { font-size: 13px; color: #334155; margin-bottom: 8px; }
+    .pattern-card.killed ol li { color: #065f46; }
+    .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+    .checklist-title { font-size: 14px; font-weight: 700; color: #064e3b; margin-bottom: 16px; }
+    .check-box { width: 20px; height: 20px; border: 2px solid #86efac; border-radius: 4px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; transition: background 0.15s; }
+    .check-box.checked { background: #16a34a; border-color: #16a34a; color: #fff; }
+    .artifact-checklist ul { list-style: none; padding: 0; margin: 0; }
+    .artifact-checklist li { list-style: none; padding: 8px 0; color: #065f46; display: flex; align-items: flex-start; gap: 10px; border-bottom: 1px solid #bbf7d0; font-size: 14px; }
+    .artifact-checklist li:last-child { border-bottom: none; }
+    .path-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 16px 0; }
+    .path-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px 16px; background: #f8fafc; }
+    .path-card .path-num { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+    .path-card .path-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .path-card .path-body { font-size: 13px; color: #334155; line-height: 1.5; }
+    .finish-line { background: linear-gradient(135deg, #0f0f1a 0%, #1a0a2e 100%); border: 1px solid #7c3aed; border-radius: 12px; padding: 36px 32px; margin-top: 8px; text-align: center; }
+    .finish-line .fl-label { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7c3aed; margin-bottom: 12px; }
+    .finish-line p { color: #94a3b8; font-size: 15px; margin-bottom: 10px; }
+    .finish-line p:last-child { margin-bottom: 0; }
+    .finish-line strong { color: #f1f5f9; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="kicker">Session 8 of 11 &middot; KP Academy</div>
+    <h1>Capstone Demo Day</h1>
+    <p>Open Build Lab &middot; Live Demos &middot; What's Next</p>
+  </div>
+
+  <nav class="toc">
+    <a href="#build-lab">Build Lab</a>
+    <a href="#demo-format">Demo Format</a>
+    <a href="#graduation-checklist">Graduation Checklist</a>
+    <a href="#whats-next">What's Next</a>
+    <a href="#closing">Closing</a>
+  </nav>
+
+  <div class="content">
+
+    <!-- Section 1: Open Build Lab -->
+    <div class="section" id="build-lab">
+      <div class="section-header">
+        <div class="part-label">Part 1 &middot; 60 min</div>
+        <h2>Open Build Lab</h2>
+        <div class="subtitle">Fix it, finish it, and get it ready to show.</div>
+      </div>
+      <div class="section-body">
+        <p>You have 60 minutes. The demo is in 60 minutes. Don't plan — build. If something breaks, that's fine. If you can't fix it, skip it. Show what works.</p>
+
+        <ul>
+          <li>Pairs work on their capstones independently.</li>
+          <li>Jake and any TAs circulate to unblock.</li>
+          <li>If the same blocker comes up twice, it gets addressed to the whole room.</li>
+          <li>Pairs with similar use cases can help each other.</li>
+        </ul>
+
+        <h3>Common Blockers — Fast Fixes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Blocker</th>
+              <th>Fast Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Skill not firing</strong></td>
+              <td>Check the description field — does it match what you're saying? The model routes by description, not file name.</td>
+            </tr>
+            <tr>
+              <td><strong>MCP not connecting</strong></td>
+              <td>Check auth token — regenerate if unsure. Most MCP auth failures are stale tokens.</td>
+            </tr>
+            <tr>
+              <td><strong>Agent looping forever</strong></td>
+              <td>Tighten the goal in the system prompt. Open-ended goals cause open-ended loops.</td>
+            </tr>
+            <tr>
+              <td><strong>Deployment 500 errors</strong></td>
+              <td>Check env vars — <code>ANTHROPIC_API_KEY</code> set? Most common cause of 500s.</td>
+            </tr>
+            <tr>
+              <td><strong>Demo breaks on live data</strong></td>
+              <td>Have a fallback with hardcoded realistic data. Show it proudly — it proves you planned for fragility.</td>
+            </tr>
+            <tr>
+              <td><strong>Antagonist too nice</strong></td>
+              <td>Add "Be adversarial. Find every flaw." to its system prompt. The default model is agreeable by nature.</td>
+            </tr>
+            <tr>
+              <td><strong>Pipeline too slow</strong></td>
+              <td>Run independent stages in parallel. Sequential calls to the same model add up fast.</td>
+            </tr>
+            <tr>
+              <td><strong>No eval cases</strong></td>
+              <td>Ask Claude Code: "Generate 10 realistic test cases for my capstone." Takes 30 seconds.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section 2: Demo Format -->
+    <div class="section" id="demo-format">
+      <div class="section-header">
+        <div class="part-label">Part 2 &middot; 7 min per pair</div>
+        <h2>Demo Format</h2>
+        <div class="subtitle">Every pair gets 7 minutes. Two valid formats. Both count equally.</div>
+      </div>
+      <div class="section-body">
+        <p>Every pair gets <strong>7 minutes</strong>. Hard stop. There are two valid formats — <strong>Shipped It</strong> and <strong>Killed It</strong>. Both count equally.</p>
+
+        <div class="pattern-grid">
+          <div class="pattern-card">
+            <div class="label">Format A</div>
+            <div class="card-title">Shipped It</div>
+            <div class="value">
+              <ol>
+                <li><strong>1 min:</strong> Who are you two, what company did you build for, what problem did you solve?</li>
+                <li><strong>4 min:</strong> Live run — show real (or realistic) input, real output, one log/trace example, one eval case (golden or adversarial), and the human-approval gate.</li>
+                <li><strong>2 min:</strong> What you'd build next + your handoff status. Both partners should speak.</li>
+              </ol>
+            </div>
+          </div>
+          <div class="pattern-card killed">
+            <div class="label">Format B</div>
+            <div class="card-title">Killed It (Equally Legitimate)</div>
+            <div class="value">
+              <ol>
+                <li><strong>1 min:</strong> Who are you two, what was the original capstone, who was the sponsor?</li>
+                <li><strong>4 min:</strong> What you built, what you learned, why it shouldn't ship. One partner covers the build, one covers the recommendation.</li>
+                <li><strong>2 min:</strong> What the company should do instead — your written recommendation.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout green">
+          If your demo breaks live, walk through your incident response plan instead. That still counts. It shows you planned for failure.
+        </div>
+
+        <p><strong>Timing note:</strong> 7 minutes is strict. Both partners should speak during the demo. Rehearse to time — 7:20 is not 7:00.</p>
+      </div>
+    </div>
+
+    <!-- Section 3: Graduation Checklist -->
+    <div class="section" id="graduation-checklist">
+      <div class="section-header">
+        <div class="part-label">Part 3</div>
+        <h2>Graduation Checklist</h2>
+        <div class="subtitle">A working demo alone does not graduate you. Every item below must be complete.</div>
+      </div>
+      <div class="section-body">
+        <p>A working demo alone does not graduate you. Every item below must be complete before you call your capstone done.</p>
+
+        <div class="artifact-checklist">
+          <div class="checklist-title">Capstone Completion Checklist</div>
+          <ul>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Capstone pipeline running end-to-end</strong> — not "almost works," actually runs from input to output without manual intervention.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Eval set: 10–20 cases</strong> including at least 2 adversarial.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Structured logs + cost cap configured</strong> — every run produces a log, there is a ceiling on what it can spend.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>PII redaction pass completed</strong> — or documented reason why not needed.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Deployment checklist completed</strong> and committed to the repo.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Post-deploy eval re-run: passing.</strong></span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Security audit run</strong> with critical findings closed.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Handoff README:</strong> another teammate could follow it without asking you a single question.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Incident response plan</strong> written and committed.</span>
+            </li>
+            <li>
+              <div class="check-box" onclick="toggleCheck(this)"></div>
+              <span><strong>Demo script rehearsed and timed at 7 minutes</strong> as a pair.</span>
+            </li>
+          </ul>
+        </div>
+
+        <p style="margin-top: 16px;">These aren't bureaucratic boxes — they are the actual difference between a project a company can run and a project that exists only on your laptop.</p>
+      </div>
+    </div>
+
+    <!-- Section 4: What's Next -->
+    <div class="section" id="whats-next">
+      <div class="section-header">
+        <div class="part-label">Part 4</div>
+        <h2>What's Next</h2>
+        <div class="subtitle">Three paths forward. The skills you have now are the foundation for all of them.</div>
+      </div>
+      <div class="section-body">
+        <div class="path-grid">
+          <div class="path-card">
+            <div class="path-num">Path 1</div>
+            <div class="path-title">Automate Your Own Work</div>
+            <div class="path-body">Pick one workflow that eats 5+ hours/week. Build a Claude Code agent for it. Iterate until it's genuinely faster than doing it yourself.</div>
+          </div>
+          <div class="path-card">
+            <div class="path-num">Path 2</div>
+            <div class="path-title">Agency Model</div>
+            <div class="path-body">Build custom agents for clients at $5–25k per project. Skills, MCPs, deployment — this is the full delivery stack you just learned.</div>
+          </div>
+          <div class="path-card">
+            <div class="path-num">Path 3</div>
+            <div class="path-title">Productize</div>
+            <div class="path-body">Pick a vertical (realtors, dentists, small law firms). Package an agent as a SaaS tool. The skills from this program are the full product delivery stack.</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <h3>The Curriculum Continues</h3>
+        <p>More sessions are available covering:</p>
+        <ul>
+          <li>Multi-agent orchestration</li>
+          <li>Production patterns — logging, evals, observability</li>
+          <li>Parallel development with git worktrees</li>
+          <li>Autonomous agents</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 5: Closing -->
+    <div class="section" id="closing">
+      <div class="section-header">
+        <div class="part-label">Part 5</div>
+        <h2>Closing</h2>
+        <div class="subtitle">Four weeks. One deployed agent. Real work.</div>
+      </div>
+      <div class="section-body">
+        <div class="finish-line">
+          <div class="fl-label">You made it</div>
+          <p>You started four weeks ago with a terminal you'd never opened and a repo you'd never touched. You leave with:</p>
+          <p><strong>A deployed agent that solves a real problem for a real company.</strong></p>
+          <p><strong>A pipeline with evals, logs, hooks, and a security posture.</strong></p>
+          <p><strong>A handoff README another engineer can follow.</strong></p>
+          <p><strong>A consulting portfolio in your operator folder</strong> — problem statements, approach memos, status updates.</p>
+          <p>That's not student work. That's what gets you hired.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    function toggleCheck(box) {
+      box.classList.toggle('checked');
+      box.textContent = box.classList.contains('checked') ? '✓' : '';
+    }
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const code = btn.nextElementSibling.querySelector('code');
+        navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+          btn.textContent = 'Copied'; btn.classList.add('copied');
+          setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

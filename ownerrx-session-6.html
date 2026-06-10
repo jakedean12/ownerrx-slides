@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KP Academy — Session 6: Connectors + MCP</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+.header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 1px solid #1e293b; }
+.header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+.header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+.header p { font-size: 15px; color: #64748b; }
+.toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+.toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+.toc a:hover { background: #f1f5f9; color: #1e293b; }
+.content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+.section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+.section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+.section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+.section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.section-header .subtitle { font-size: 13px; color: #94a3b8; }
+.section-body { padding: 28px 32px; }
+h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+h3:first-child { margin-top: 0; }
+p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+p:last-child { margin-bottom: 0; }
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+li strong { color: #0f172a; }
+code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+.code-block { position: relative; margin: 14px 0; }
+pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.copy-btn:hover { background: #334155; color: #e2e8f0; }
+.copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+.callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+.callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+.callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+.callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+.step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+.step { display: flex; gap: 14px; align-items: flex-start; }
+.step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+.step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+.step-body strong { color: #0f172a; }
+.divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+td strong { color: #0f172a; }
+td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+.tier-badge { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 6px; }
+.tier-badge.t1 { background: #f0fdf4; color: #065f46; border: 1px solid #bbf7d0; }
+.tier-badge.t2 { background: #eff6ff; color: #1e3a5f; border: 1px solid #bfdbfe; }
+.tier-badge.t3 { background: #fff7ed; color: #7c2d12; border: 1px solid #fed7aa; }
+.pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+.pattern-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; background: #f8fafc; }
+.pattern-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 4px; }
+.pattern-card .value { font-size: 13px; color: #334155; line-height: 1.5; }
+.decision-tree { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px 24px; margin: 14px 0; }
+.dt-step { display: flex; align-items: flex-start; gap: 14px; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }
+.dt-step:last-child { border-bottom: none; }
+.dt-num { flex-shrink: 0; width: 22px; height: 22px; background: #0f172a; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 2px; }
+.dt-body { flex: 1; font-size: 14px; color: #334155; line-height: 1.6; }
+.dt-body strong { color: #0f172a; }
+.dt-arrow { color: #7c3aed; font-weight: 700; }
+.artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+.artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+.artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+.artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+.next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+.next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+.next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+.next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">Session 6 of 11 · KP Academy</div>
+  <h1>Connectors + MCP</h1>
+  <p>Three Tiers of Reach · Installing MCPs · Building Custom MCPs · Computer Use</p>
+</div>
+
+<nav class="toc">
+  <a href="#shareback">Shareback</a>
+  <a href="#three-tiers">Three Tiers</a>
+  <a href="#what-is-mcp">What is MCP</a>
+  <a href="#install-mcp">Install MCP</a>
+  <a href="#build-mcp">Build MCP</a>
+  <a href="#schema-design">Schema Design</a>
+  <a href="#computer-use">Computer Use</a>
+  <a href="#decision-tree">Decision Tree</a>
+  <a href="#homework">Homework</a>
+</nav>
+
+<div class="content">
+
+  <!-- Section 1: Homework Shareback -->
+  <div class="section" id="shareback">
+    <div class="section-header">
+      <div class="part-label">10 min</div>
+      <h2>Homework Shareback</h2>
+      <div class="subtitle">Hooks from Session 5 — what actually happened</div>
+    </div>
+    <div class="section-body">
+      <p>Each pair shares out:</p>
+      <ul>
+        <li>Did you get your hooks working?</li>
+        <li>Which hook type did you use — <code>PreToolUse</code>, <code>PostToolUse</code>, or both?</li>
+        <li>Did any hook catch a real mistake?</li>
+        <li>Did any validation-retry loop trigger?</li>
+      </ul>
+      <div class="callout warn">
+        If no one has a concrete example yet — open Claude Code right now, run your agent from last session, and watch what the hook does. Live is fine.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: Three Tiers -->
+  <div class="section" id="three-tiers">
+    <div class="section-header">
+      <div class="part-label">20 min</div>
+      <h2>The Three Tiers of Reach</h2>
+      <div class="subtitle">How to connect Claude to anything outside files and shell</div>
+    </div>
+    <div class="section-body">
+      <p>Claude Code on its own reads files and runs shell commands. To touch anything outside — your email, CRM, accounting software — you need a connector. There are three tiers. Always walk them in order.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>What it is</th>
+            <th>When to use</th>
+            <th>Effort</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <span class="tier-badge t1">Tier 1</span><br>
+              <strong>Built-in / Pre-built MCP</strong>
+            </td>
+            <td>Connectors already published — Gmail, GitHub, Supabase, Slack, Google Drive, hundreds more.</td>
+            <td>First choice, always.</td>
+            <td>5 min install.</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="tier-badge t2">Tier 2</span><br>
+              <strong>Custom MCP</strong>
+            </td>
+            <td>You (or Claude Code) build a small server wrapping an API your business uses.</td>
+            <td>The tool has an API but no public MCP exists.</td>
+            <td>1–4 hours (Claude writes it).</td>
+          </tr>
+          <tr>
+            <td>
+              <span class="tier-badge t3">Tier 3</span><br>
+              <strong>Computer Use</strong>
+            </td>
+            <td>Claude controls your mouse and keyboard on screen.</td>
+            <td>Tool has no API at all — legacy software, locked SaaS.</td>
+            <td>Always available, but slower and costlier.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>The rule:</strong> walk the tiers in order. Don't build a custom MCP if a built-in one exists. Don't use Computer Use if an API + MCP exists.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: What is MCP -->
+  <div class="section" id="what-is-mcp">
+    <div class="section-header">
+      <div class="part-label">20 min</div>
+      <h2>MCP: What It Is and Why It Won</h2>
+      <div class="subtitle">The universal plug for AI agents</div>
+    </div>
+    <div class="section-body">
+      <p>MCP (Model Context Protocol) is the open standard for connecting AI agents to tools and data. Anthropic created it in 2024. By mid-2025 it was adopted by OpenAI, Microsoft Copilot, Google, Cursor, Windsurf, and nearly every serious AI developer tool.</p>
+
+      <p>Think of MCP as <strong>USB for AI</strong> — a universal plug. Write an MCP server once; every AI platform that speaks MCP can use it. You're not building for Claude. You're building for the entire AI ecosystem.</p>
+
+      <div class="callout blue">
+        <strong>Why this matters:</strong> learn it here, use it everywhere. Your connectors outlive any AI platform.
+      </div>
+
+      <h3>The MCP Ecosystem</h3>
+      <div class="pattern-grid">
+        <div class="pattern-card">
+          <div class="label">Communication</div>
+          <div class="value">Gmail, Slack, Outlook, Discord, Twilio</div>
+        </div>
+        <div class="pattern-card">
+          <div class="label">Code + Dev</div>
+          <div class="value">GitHub, GitLab, Linear, Jira, Sentry</div>
+        </div>
+        <div class="pattern-card">
+          <div class="label">Data + Databases</div>
+          <div class="value">Supabase, PostgreSQL, Airtable, Notion</div>
+        </div>
+        <div class="pattern-card">
+          <div class="label">Files + Docs</div>
+          <div class="value">Google Drive, Dropbox, Confluence</div>
+        </div>
+        <div class="pattern-card">
+          <div class="label">CRM + Sales</div>
+          <div class="value">HubSpot, Salesforce, Pipedrive</div>
+        </div>
+        <div class="pattern-card">
+          <div class="label">Finance + Ops</div>
+          <div class="value">Stripe, QuickBooks, Zapier, n8n</div>
+        </div>
+      </div>
+
+      <h3>Multi-Connector Demo</h3>
+      <p>One prompt, two connectors, one useful output:</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>Find my 3 most recent client emails, cross-reference against GitHub issues mentioning their company name, then draft a follow-up message to whoever has an unresolved issue.</code></pre>
+      </div>
+      <p>The power isn't one connector — it's composing them. An agent that reads email <em>and</em> code issues <em>and</em> drafts a response crosses boundaries no single SaaS tool does.</p>
+    </div>
+  </div>
+
+  <!-- Section 4: Install MCP -->
+  <div class="section" id="install-mcp">
+    <div class="section-header">
+      <div class="part-label">35 min</div>
+      <h2>Install Your First MCP</h2>
+      <div class="subtitle">Each pair picks one connector based on their capstone and gets real data flowing</div>
+    </div>
+    <div class="section-body">
+      <p>Each pair picks one MCP based on their capstone. Common choices:</p>
+      <ul>
+        <li><strong>GitHub</strong> — code and repos</li>
+        <li><strong>Gmail</strong> — email</li>
+        <li><strong>Supabase</strong> — database</li>
+        <li><strong>Google Drive</strong> — documents</li>
+        <li><strong>Slack</strong> — notifications</li>
+        <li><strong>HubSpot</strong> — CRM</li>
+        <li><strong>Notion</strong> — wiki</li>
+      </ul>
+
+      <h3>Example: GitHub MCP</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>claude mcp add github -- npx -y @modelcontextprotocol/server-github</code></pre>
+      </div>
+      <p>Authenticate when prompted. Generate a token at <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.</p>
+
+      <h3>Token Hygiene Rules</h3>
+      <ul>
+        <li>Generate with <strong>minimum scopes</strong> the MCP actually needs. Read-only research doesn't need repo-write.</li>
+        <li><strong>Never paste the token into a file tracked by git.</strong> Use an env var or the MCP config file (which should be in <code>.gitignore</code>).</li>
+        <li><strong>Write it to a password manager immediately.</strong> You'll need to rotate in 90 days.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <p>Restart Claude Code after installing. Test with:</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>List my 5 most recent repos and tell me which ones I haven't committed to in a month.</code></pre>
+      </div>
+
+      <div class="callout green">
+        <strong>Goal:</strong> every pair leaves this block with at least one real MCP connected to real data from their capstone.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: Build MCP -->
+  <div class="section" id="build-mcp">
+    <div class="section-header">
+      <div class="part-label">20 min</div>
+      <h2>Building a Custom MCP</h2>
+      <div class="subtitle">When no pre-built connector exists — Claude Code writes the server</div>
+    </div>
+    <div class="section-body">
+      <p>Most pairs won't hand-write MCP code. Claude Code builds the server; you direct it.</p>
+
+      <h3>The Workflow</h3>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Pick a SaaS tool with an API</strong> — HubSpot, QuickBooks, Airtable, your internal app.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Find the API docs</strong> for that tool.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>Open Claude Code.</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body"><strong>Ask Claude:</strong> "Build me an MCP server that wraps these endpoints: [list 3–5 operations you care about]. Use the TypeScript MCP SDK."</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body"><strong>Claude Code writes the server.</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-body"><strong>Add it to Claude Code's MCP list.</strong></div>
+        </div>
+        <div class="step">
+          <div class="step-num">7</div>
+          <div class="step-body"><strong>Run a task that uses the new connector.</strong></div>
+        </div>
+      </div>
+
+      <h3>Minimal TypeScript MCP Example</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>import { Server } from "@modelcontextprotocol/sdk/server";
+
+const server = new Server({ name: "my-crm", version: "1.0.0" });
+
+server.setRequestHandler("tools/list", async () => ({
+  tools: [{
+    name: "get_customer",
+    description: "Fetch a customer by ID from our CRM",
+    inputSchema: { type: "object", properties: { id: { type: "string" } } }
+  }]
+}));
+
+server.connect();</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Schema Design -->
+  <div class="section" id="schema-design">
+    <div class="section-header">
+      <div class="part-label">15 min</div>
+      <h2>Tool Schema Design</h2>
+      <div class="subtitle">The schema is your prompt to Claude — write it like one</div>
+    </div>
+    <div class="section-body">
+      <p>Claude reads the schema to decide whether to call the tool and how. A bad schema makes Claude guess.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Schema Element</th>
+            <th>Bad</th>
+            <th>Good</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tool description</strong></td>
+            <td><code>"Gets data"</code></td>
+            <td><code>"Fetch the most recent invoice for a given customer ID. Use only when the user asks about a specific invoice; do not use for general billing questions."</code></td>
+          </tr>
+          <tr>
+            <td><strong>Parameter description</strong></td>
+            <td>(none)</td>
+            <td><code>"The customer's UUID, e.g. cust_4471. NOT the customer name."</code></td>
+          </tr>
+          <tr>
+            <td><strong>Required vs optional</strong></td>
+            <td>Everything optional</td>
+            <td>Explicit required/optional semantics</td>
+          </tr>
+          <tr>
+            <td><strong>Field types</strong></td>
+            <td><code>string</code> for everything</td>
+            <td><code>customer_id: string</code>, <code>since_date: string (ISO 8601)</code>, <code>limit: integer</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Four Rules</h3>
+      <ol>
+        <li><strong>Required fields are required for a reason.</strong> If Claude could call the tool without it, it's optional.</li>
+        <li><strong>Nullable ≠ optional.</strong> Different semantics. Pick deliberately.</li>
+        <li><strong>Descriptions earn their token cost.</strong> Cut filler. Keep specifics: trigger conditions, anti-patterns, expected output.</li>
+        <li><strong>Few-shot examples belong when the right way to call the tool is non-obvious.</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <!-- Section 7: Computer Use -->
+  <div class="section" id="computer-use">
+    <div class="section-header">
+      <div class="part-label">15 min</div>
+      <h2>Computer Use</h2>
+      <div class="subtitle">Tier 3 — when there's no API and no MCP</div>
+    </div>
+    <div class="section-body">
+      <p>Computer Use lets Claude control a mouse and keyboard — either your screen or a virtual one. It sees the screen as an image, decides where to click, types, moves the mouse.</p>
+
+      <h3>When you need it</h3>
+      <ul>
+        <li>Legacy software with no API</li>
+        <li>SaaS tools that locked down their API</li>
+        <li>Internal tools IT won't expose</li>
+        <li>Websites with no programmatic access</li>
+      </ul>
+
+      <h3>When to skip it</h3>
+      <ul>
+        <li><strong>Any tool with an API</strong> — use Tier 1 or Tier 2 instead</li>
+        <li><strong>High-volume work</strong> — Computer Use is slower and costlier per task</li>
+      </ul>
+
+      <div class="callout warn">
+        Computer Use is always available as a fallback. It is never the first choice. Before reaching for it, check whether an API or pre-built MCP exists.
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8: Decision Tree -->
+  <div class="section" id="decision-tree">
+    <div class="section-header">
+      <div class="part-label">5 min</div>
+      <h2>The Integration Decision Tree</h2>
+      <div class="subtitle">One question at a time — stop when you have an answer</div>
+    </div>
+    <div class="section-body">
+      <p>When you need Claude to touch something outside files and shell:</p>
+      <div class="decision-tree">
+        <div class="dt-step">
+          <div class="dt-num">1</div>
+          <div class="dt-body">Is there a <strong>built-in or pre-built MCP</strong>? <span class="dt-arrow">→</span> Install it, done. <em>(Tier 1)</em></div>
+        </div>
+        <div class="dt-step">
+          <div class="dt-num">2</div>
+          <div class="dt-body">Can a <strong>shell command</strong> do it? (<code>curl</code>, <code>gh</code>, <code>psql</code>) <span class="dt-arrow">→</span> Let Claude run it. Not an MCP but often enough.</div>
+        </div>
+        <div class="dt-step">
+          <div class="dt-num">3</div>
+          <div class="dt-body">Does the tool have an <strong>API but no MCP</strong>? <span class="dt-arrow">→</span> Tier 2 — ask Claude Code to build a custom MCP.</div>
+        </div>
+        <div class="dt-step">
+          <div class="dt-num">4</div>
+          <div class="dt-body"><strong>No API at all?</strong> <span class="dt-arrow">→</span> Tier 3 — Computer Use.</div>
+        </div>
+        <div class="dt-step">
+          <div class="dt-num">5</div>
+          <div class="dt-body">Does it need to run <strong>24/7, not just when you're at your laptop</strong>? <span class="dt-arrow">→</span> That's Session 7 (deployment).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 9: Homework -->
+  <div class="section" id="homework">
+    <div class="section-header">
+      <div class="part-label">Homework</div>
+      <h2>Session 6 Homework</h2>
+      <div class="subtitle">Run the skill, connect real data, document what you built</div>
+    </div>
+    <div class="section-body">
+      <p>Run <code>/kp-session-6-homework</code> — or type <strong>"start kp session 6 homework"</strong> if the slash command doesn't fire.</p>
+
+      <p>The skill will:</p>
+      <ul>
+        <li>Recommend the right MCP for your capstone</li>
+        <li>Walk through install and auth</li>
+        <li>Run one real query on your business data</li>
+        <li>Scaffold a custom MCP spec for any gap it identifies</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <div class="artifact-checklist">
+        <h3>Artifact Checklist</h3>
+        <ul>
+          <li>At least one MCP installed, authenticated, and returning real data</li>
+          <li>One real query transcript saved to <code>artifacts/mcp-wins.md</code> in the capstone lead's folder</li>
+          <li><code>custom-mcp-spec.md</code> if a gap was identified (save to capstone lead's folder)</li>
+          <li><code>tool-contracts.md</code> — one tool contract per connector (tool name, auth method, allowed actions, forbidden actions, expected schema, failure/retry behavior)</li>
+        </ul>
+      </div>
+
+      <div class="next-up">
+        <div class="label">Next Session</div>
+        <p><strong>Session 7 — Deploy + Security + Audit.</strong> Your agent goes live. Every pair leaves with a deployed URL and an incident response plan written before they need it.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  const text = pre.querySelector('code').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    btn.textContent = 'Copy';
+  });
+}
+</script>
+
+</body>
+</html>

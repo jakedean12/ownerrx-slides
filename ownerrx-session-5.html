@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KP Academy — Session 5: Hooks + Guardrails</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+  .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 1px solid #1e293b; }
+  .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+  .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+  .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+  .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+  .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+  .section-body { padding: 28px 32px; }
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+  code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .code-block { position: relative; margin: 14px 0; }
+  pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+  pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+  .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+  .callout.red { border-color: #ef4444; background: #fef2f2; color: #7f1d1d; }
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+  td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .hook-box { border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; margin: 18px 0; }
+  .hook-box-header { background: #f8fafc; padding: 12px 18px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+  .hook-badge { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 4px; }
+  .hook-badge.pre { background: #fef3c7; color: #92400e; }
+  .hook-badge.post { background: #dbeafe; color: #1e3a5f; }
+  .hook-badge.stop { background: #f3e8ff; color: #4c1d95; }
+  .hook-box-title { font-size: 14px; font-weight: 700; color: #0f172a; }
+  .hook-box-body { padding: 18px 18px 6px; }
+  .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+  .next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+  .next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">KP Academy &nbsp;·&nbsp; Session 5 of 11</div>
+  <h1>Hooks + Guardrails</h1>
+  <p>PreToolUse &nbsp;·&nbsp; PostToolUse &nbsp;·&nbsp; Stop Hooks &nbsp;·&nbsp; Structured Errors &nbsp;·&nbsp; Validation-Retry Loops</p>
+</div>
+
+<nav class="toc">
+  <a href="#shareback">Shareback</a>
+  <a href="#what-are-hooks">What Are Hooks</a>
+  <a href="#three-hook-types">Three Hook Types</a>
+  <a href="#structured-errors">Structured Errors</a>
+  <a href="#retry-loops">Retry Loops</a>
+  <a href="#hookify">Hookify</a>
+  <a href="#homework">Homework</a>
+</nav>
+
+<div class="content">
+
+  <!-- SECTION 1: Homework Shareback -->
+  <div class="section" id="shareback">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 1 · 15 min</div>
+      <h2>Homework Shareback</h2>
+      <div class="subtitle">Pairs share out before diving into new material</div>
+    </div>
+    <div class="section-body">
+      <p>Take a few minutes to discuss these questions with your pair. Be specific — share what actually happened, not what you expected to happen.</p>
+
+      <ul>
+        <li><strong>Who got their pipeline running end-to-end?</strong> What was the last thing standing between you and a clean run?</li>
+        <li><strong>Who had an antagonist that was too nice?</strong> If your adversarial eval cases were easy to pass, why? What would make them harder?</li>
+        <li><strong>Did any eval case catch a real failure?</strong> Something the agent did wrong that you wouldn't have noticed otherwise?</li>
+        <li><strong>What's the most dangerous thing your agent could accidentally do right now?</strong> Not worst-case hypothetical — most likely real accident, given how your agent actually behaves today.</li>
+      </ul>
+
+      <div class="callout blue">
+        That last question is not rhetorical. The answer is what you're writing a hook for today.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: What Hooks Are -->
+  <div class="section" id="what-are-hooks">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 2 · 25 min</div>
+      <h2>What Hooks Are</h2>
+      <div class="subtitle">The difference between a suggestion and a rule</div>
+    </div>
+    <div class="section-body">
+      <h3>The core concept</h3>
+      <p>A hook is a shell command that the Claude Code harness runs automatically in response to an event — before a tool fires, after a tool returns, or when Claude tries to end a session. The harness runs hooks regardless of what Claude decides to do. <strong>Claude cannot override a hook.</strong></p>
+
+      <p>This is different from anything you put in <code>CLAUDE.md</code>. A CLAUDE.md instruction is a suggestion — Claude reads it and tries to follow it, but can reason its way around it in the moment. A hook is enforced at the infrastructure level. It runs no matter what.</p>
+
+      <div class="callout">
+        <strong>CLAUDE.md is a suggestion. A hook is a rule.</strong>
+      </div>
+
+      <h3>When to use each</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>You want Claude to...</th>
+            <th>Use...</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Generally prefer a pattern</td>
+            <td>Prompt / CLAUDE.md</td>
+          </tr>
+          <tr>
+            <td><strong>Never do X under any circumstance</strong></td>
+            <td><strong>PreToolUse hook</strong></td>
+          </tr>
+          <tr>
+            <td>Always log when X happens</td>
+            <td>PostToolUse hook</td>
+          </tr>
+          <tr>
+            <td>Confirm before destructive operations</td>
+            <td>PreToolUse hook with human prompt</td>
+          </tr>
+          <tr>
+            <td>Stop a session only after a condition is met</td>
+            <td>Stop hook</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Where hooks live</h3>
+      <p>Hooks go in <code>.claude/settings.json</code> under a <code>"hooks"</code> key. Each entry says when to fire, which tool to watch, and what command to run.</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "bash /path/to/check-dangerous-command.sh" }]
+      }
+    ]
+  }
+}</code></pre>
+      </div>
+
+      <p>Three things to notice:</p>
+      <ul>
+        <li>The <strong>hook type</strong> (<code>PreToolUse</code>) tells the harness <em>when</em> to fire.</li>
+        <li>The <strong>matcher</strong> (<code>"Bash"</code>) narrows it to a specific tool — you're not watching every tool, just Bash calls.</li>
+        <li>The <strong>command</strong> is just a bash command. Anything you can run in your terminal, you can run as a hook.</li>
+      </ul>
+
+      <div class="callout warn">
+        <strong>Always use absolute paths</strong> in the <code>command</code> field. The harness doesn't always run from the folder you expect, so <code>./hooks/check.sh</code> can silently fail while <code>/Users/yourname/project/hooks/check.sh</code> always works.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: Three Hook Types -->
+  <div class="section" id="three-hook-types">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 3 · 40 min</div>
+      <h2>The Three Hook Types</h2>
+      <div class="subtitle">PreToolUse, PostToolUse, and Stop — when and why to use each</div>
+    </div>
+    <div class="section-body">
+
+      <table>
+        <thead>
+          <tr>
+            <th>Hook type</th>
+            <th>Fires when</th>
+            <th>Primary use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>PreToolUse</strong></td>
+            <td>Before the tool call executes</td>
+            <td>Block dangerous commands, require confirmation</td>
+          </tr>
+          <tr>
+            <td><strong>PostToolUse</strong></td>
+            <td>After the tool returns its result</td>
+            <td>Log every tool call, audit outputs, trigger side effects</td>
+          </tr>
+          <tr>
+            <td><strong>Stop</strong></td>
+            <td>When Claude tries to end the session</td>
+            <td>Force a commit, run a final verification check</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <!-- PreToolUse -->
+      <div class="hook-box">
+        <div class="hook-box-header">
+          <span class="hook-badge pre">PreToolUse</span>
+          <span class="hook-box-title">Block dangerous commands before they run</span>
+        </div>
+        <div class="hook-box-body">
+          <p>The script receives the command as <code>$1</code>. Exit 1 to block. Exit 0 to allow.</p>
+          <div class="code-block">
+            <button class="copy-btn">Copy</button>
+            <pre><code>#!/bin/bash
+COMMAND="$1"
+if echo "$COMMAND" | grep -qE 'rm\s+-rf|DROP TABLE|DELETE FROM.*WHERE 1'; then
+  echo "BLOCKED: Destructive command requires human approval before running."
+  exit 1
+fi
+exit 0</code></pre>
+          </div>
+          <div class="callout warn">
+            <strong>Exit 1 blocks. Exit 0 passes.</strong> Hooks that crash and implicitly exit 0 fail open — meaning they silently allow everything through. Always test your hook script directly in the terminal before wiring it in. Run it against a safe input and a dangerous input and confirm you get the behavior you expect.
+          </div>
+        </div>
+      </div>
+
+      <!-- PostToolUse -->
+      <div class="hook-box">
+        <div class="hook-box-header">
+          <span class="hook-badge post">PostToolUse</span>
+          <span class="hook-box-title">Log every tool call to an audit file</span>
+        </div>
+        <div class="hook-box-body">
+          <p>The script receives the tool name as <code>$1</code>, the input as <code>$2</code>, and the output as <code>$3</code>. Append to a <code>.jsonl</code> file for easy review later.</p>
+          <div class="code-block">
+            <button class="copy-btn">Copy</button>
+            <pre><code>#!/bin/bash
+TOOL_NAME="$1"
+INPUT="$2"
+OUTPUT="$3"
+TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+echo "{\"timestamp\": \"$TIMESTAMP\", \"tool\": \"$TOOL_NAME\", \"output_length\": ${#OUTPUT}}" >> audit.jsonl</code></pre>
+          </div>
+          <div class="callout green">
+            Once you have an audit log, you're not guessing what your agent did. You're reading the receipt. When something goes wrong in production, this file is the first thing you open.
+          </div>
+        </div>
+      </div>
+
+      <!-- Stop -->
+      <div class="hook-box">
+        <div class="hook-box-header">
+          <span class="hook-badge stop">Stop</span>
+          <span class="hook-box-title">Auto-commit work before the session ends</span>
+        </div>
+        <div class="hook-box-body">
+          <p>Runs when Claude attempts to end the session. Use it to enforce hygiene — like making sure work is always committed before Claude walks away.</p>
+          <div class="code-block">
+            <button class="copy-btn">Copy</button>
+            <pre><code>#!/bin/bash
+cd "$PROJECT_DIR"
+if [ -n "$(git status --porcelain)" ]; then
+  git add participants/
+  git commit -m "auto: session work $(date +%Y-%m-%d)"
+fi</code></pre>
+          </div>
+          <div class="callout warn">
+            Stop hooks that fail (exit non-zero) can prevent Claude from ending the session cleanly — the session gets stuck in a loop. Always test your Stop hook in isolation before wiring it in, and make sure every code path exits 0.
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Live exercise — 25 min</h3>
+      <p>Each pair adds two hooks to their capstone project: one PreToolUse that blocks whatever is most dangerous for their specific agent, and one PostToolUse that writes every tool call to <code>audit.jsonl</code>.</p>
+
+      <p><strong>Step 1:</strong> Open Claude Code inside your capstone folder. Use this prompt for the PreToolUse hook:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Add a PreToolUse hook to my .claude/settings.json that blocks
+[most dangerous thing your agent could do]. Create the hook script
+in a hooks/ folder. Show me both the hook script and the
+settings.json entry.</code></pre>
+      </div>
+
+      <p><strong>Step 2:</strong> Use this prompt for the PostToolUse hook:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Now add a PostToolUse hook that logs every tool call with timestamp,
+tool name, and a summary of the input to audit.jsonl in this project
+root. Wire it into settings.json.</code></pre>
+      </div>
+
+      <p><strong>Step 3:</strong> Verify both hooks actually work.</p>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">Read what Claude generated. Find <code>exit 1</code> and <code>exit 0</code> in the PreToolUse script. Verify the condition matches the actual dangerous behavior you care about.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">Run the PreToolUse script directly in the terminal with a dangerous input. Confirm it exits 1 and prints the block message.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">Run a task that <em>should</em> be blocked inside Claude Code. Confirm it stops.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">Run a safe task. Then open <code>audit.jsonl</code> and confirm a new entry appeared with the right timestamp and tool name.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Structured Errors -->
+  <div class="section" id="structured-errors">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 4 · 25 min</div>
+      <h2>Structured Error Responses</h2>
+      <div class="subtitle">Stop making Claude guess what went wrong</div>
+    </div>
+    <div class="section-body">
+      <p>When a tool returns a plain string like <code>"Error: something went wrong"</code>, Claude has to guess whether to retry, stop, ask for help, or try a different approach. A structured error with a category removes the guesswork entirely — Claude reads the category and knows exactly what to do.</p>
+
+      <h3>The four error categories</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Example cause</th>
+            <th>What Claude should do</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>retryable</strong></td>
+            <td>Network timeout</td>
+            <td>Wait the specified delay, then retry (up to max retries)</td>
+          </tr>
+          <tr>
+            <td><strong>permanent</strong></td>
+            <td>Record not found</td>
+            <td>Do not retry — report the failure and move on</td>
+          </tr>
+          <tr>
+            <td><strong>authorization</strong></td>
+            <td>Expired token, permission denied</td>
+            <td>Stop immediately — get a human to resolve credentials</td>
+          </tr>
+          <tr>
+            <td><strong>schema</strong></td>
+            <td>Required field missing</td>
+            <td>Re-prompt Claude to correct the input and try again</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="divider"></div>
+
+      <h3>Before: a plain string error</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>return "Error: something went wrong with the database"</code></pre>
+      </div>
+
+      <h3>After: a structured error</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>return {
+  "error": True,
+  "category": "retryable",
+  "message": "Database connection timed out after 5 seconds",
+  "hint": "Retry after 2 seconds. Maximum 3 retries before escalating.",
+  "retry_after": 2
+}</code></pre>
+      </div>
+
+      <h3>Permanent error example</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>return {
+  "error": True,
+  "category": "permanent",
+  "message": "Patient record ID 4821 does not exist in the system.",
+  "hint": "Do not retry. Report this record ID as not found."
+}</code></pre>
+      </div>
+
+      <h3>Authorization error example</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>return {
+  "error": True,
+  "category": "authorization",
+  "message": "API token expired. Request rejected with 401.",
+  "hint": "Stop and alert a human to refresh credentials before continuing."
+}</code></pre>
+      </div>
+
+      <div class="callout">
+        The <code>hint</code> field is optional but powerful. It lets you encode your team's decision logic directly into the error — so Claude follows your protocol, not its default instinct.
+      </div>
+
+      <h3>Exercise</h3>
+      <p>Each pair picks one tool in their capstone and updates it to return structured error objects for at least three of the four categories: retryable, permanent, authorization, and schema. Commit the change to the capstone lead's folder when done.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Retry Loops -->
+  <div class="section" id="retry-loops">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 5 · 15 min</div>
+      <h2>Validation-Retry Loops</h2>
+      <div class="subtitle">Catch bad outputs before they become bad actions</div>
+    </div>
+    <div class="section-body">
+      <p>A validation-retry loop sits between a tool call and everything downstream. It checks the output against a schema before letting Claude act on it. If the output is invalid, it returns a schema error and Claude retries with corrected input. If it's still invalid after two retries, it escalates instead of continuing.</p>
+
+      <h3>The pattern</h3>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Tool call</strong> — Claude calls the tool with its current input.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Validate output</strong> — Check the result against your expected schema. Is every required field present? Are values the right type and range?</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>If invalid</strong> — Return a structured error with <code>"category": "schema"</code> and a specific hint about what was wrong. Claude reads the hint and retries.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body"><strong>Two retries max</strong> — If the output is still invalid after two attempts, stop and escalate. Never loop forever.</div>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        Always put a hard cap on retries. A loop with no exit condition will keep Claude running indefinitely and rack up cost. Two retries then escalate is a reasonable default for most tools.
+      </div>
+
+      <h3>Exercise</h3>
+      <p>Each pair wires a validation-retry loop around the riskiest tool in their pipeline — the one where bad output would cause the most downstream harm. Use the structured error format from Part 4 for the schema error response. Commit to the capstone lead's folder when done.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6: Hookify -->
+  <div class="section" id="hookify">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 6 · 10 min</div>
+      <h2>The Hookify Pattern</h2>
+      <div class="subtitle">When you've corrected Claude three times, write a hook instead</div>
+    </div>
+    <div class="section-body">
+      <p>Here's a simple heuristic: if you've given Claude the same correction three times in prompts — "don't do X," "remember not to do X," "I said don't do X" — stop correcting and write a hook instead.</p>
+
+      <p>The third time you say something in a prompt, that's a PreToolUse hook waiting to be written. Prompts are for preferences. Hooks are for rules. Once you recognize that something <em>must never happen</em>, it belongs in a hook — not in a prompt you'll have to repeat next session.</p>
+
+      <div class="callout green">
+        <strong>The pattern:</strong> Notice the repetition &rarr; write the hook script &rarr; add it to <code>settings.json</code> &rarr; delete the correction from your prompt. Your agent gets more reliable, and your prompts get shorter.
+      </div>
+
+      <p>As you build out your capstone over the coming sessions, keep a short list of things you keep having to remind Claude about. That list is your hook backlog.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 7: Homework -->
+  <div class="section" id="homework">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Part 7</div>
+      <h2>Homework</h2>
+      <div class="subtitle">Harden your capstone with hooks, structured errors, and a retry loop</div>
+    </div>
+    <div class="section-body">
+      <p>Run <code>/kp-session-5-homework</code> to start the guided skill. If the slash command doesn't fire, type <strong>"start kp session 5 homework"</strong> instead.</p>
+
+      <p>The skill walks each pair through four hardening steps:</p>
+      <ol>
+        <li>Add one <strong>PreToolUse hook</strong> that blocks the most dangerous thing your agent can do.</li>
+        <li>Add one <strong>PostToolUse hook</strong> that writes every tool call to <code>audit.jsonl</code>.</li>
+        <li>Add <strong>structured error categories</strong> (retryable, permanent, auth, schema) to at least one tool.</li>
+        <li>Wire a <strong>validation-retry loop</strong> around the riskiest tool in your pipeline.</li>
+      </ol>
+
+      <p>After all four changes are in place, re-run the eval set from Session 4 against the post-hook agent. Confirm that guardrails block what they're supposed to block without breaking any legitimate flows. Commit everything to the capstone lead's folder before the next session.</p>
+
+      <div class="divider"></div>
+
+      <div class="artifact-checklist">
+        <h3>Artifact checklist</h3>
+        <ul>
+          <li>At least one PreToolUse hook present in <code>.claude/settings.json</code></li>
+          <li>At least one PostToolUse hook writing to <code>audit.jsonl</code></li>
+          <li>One tool updated with structured error categories (retryable, permanent, auth, schema)</li>
+          <li>One validation-retry loop wired around a risky tool</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="next-up">
+        <div class="label">Next session</div>
+        <p><strong>Session 6 — Connectors + MCP.</strong> Three tiers of reach: built-in connectors, custom MCP servers, and Computer Use. Every pair leaves with at least one real MCP connected to real data.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const code = btn.nextElementSibling.querySelector('code');
+    navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+      btn.textContent = 'Copied'; btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+    });
+  });
+});
+</script>
+
+</body>
+</html>

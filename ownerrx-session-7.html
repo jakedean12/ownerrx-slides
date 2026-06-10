@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KP Academy — Session 7 of 11 · Deploy + Security + Audit</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+.header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 1px solid #1e293b; }
+.header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+.header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+.header p { font-size: 15px; color: #64748b; }
+.toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+.toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+.toc a:hover { background: #f1f5f9; color: #1e293b; }
+.content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+.section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+.section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+.section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+.section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+.section-header .subtitle { font-size: 13px; color: #94a3b8; }
+.section-body { padding: 28px 32px; }
+h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+h3:first-child { margin-top: 0; }
+p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+p:last-child { margin-bottom: 0; }
+ul, ol { padding-left: 22px; margin-bottom: 14px; }
+li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+li strong { color: #0f172a; }
+code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+.code-block { position: relative; margin: 14px 0; }
+pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+.copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+.copy-btn:hover { background: #334155; color: #e2e8f0; }
+.copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+.callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+.callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+.callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+.callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+.callout.red { border-color: #ef4444; background: #fef2f2; color: #7f1d1d; }
+.step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+.step { display: flex; gap: 14px; align-items: flex-start; }
+.step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+.step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+.step-body strong { color: #0f172a; }
+.divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+td strong { color: #0f172a; }
+td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+.platform-card { border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+.platform-card-header { background: #0f172a; padding: 14px 20px; display: flex; align-items: center; gap: 12px; }
+.platform-name { font-size: 16px; font-weight: 700; color: #f1f5f9; }
+.platform-time { font-size: 11px; font-weight: 600; color: #7c3aed; background: #1e1235; padding: 2px 8px; border-radius: 10px; margin-left: auto; }
+.platform-card-body { padding: 20px 24px; }
+.security-rule { border-left: 3px solid #ef4444; background: #fef2f2; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #7f1d1d; line-height: 1.6; }
+.security-rule strong { color: #991b1b; }
+.incident-step { display: flex; gap: 16px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f1f5f9; }
+.incident-step:last-child { border-bottom: none; }
+.incident-num { flex-shrink: 0; width: 32px; height: 32px; background: #0f172a; color: #7c3aed; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; margin-top: 2px; border: 1px solid #7c3aed; }
+.incident-body .incident-title { font-size: 14px; font-weight: 700; color: #0f172a; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.incident-body p { font-size: 14px; color: #475569; margin: 0; line-height: 1.6; }
+.artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+.artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+.artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+.artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+.next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+.next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+.next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+.next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="kicker">Session 7 of 11 &middot; KP Academy</div>
+  <h1>Deploy + Security + Audit</h1>
+  <p>Vercel &middot; Railway &middot; Supabase &middot; Security Essentials &middot; Incident Response</p>
+</div>
+
+<!-- TABLE OF CONTENTS -->
+<nav class="toc">
+  <a href="#why-deploy">Why Deploy</a>
+  <a href="#modern-trio">Modern Trio</a>
+  <a href="#big-three">Big Three</a>
+  <a href="#deploy-it">Deploy It</a>
+  <a href="#security">Security</a>
+  <a href="#incident-response">Incident Response</a>
+  <a href="#homework">Homework</a>
+</nav>
+
+<div class="content">
+
+  <!-- SECTION 1: WHY DEPLOY -->
+  <div class="section" id="why-deploy">
+    <div class="section-header">
+      <div class="part-label">Part 1 &middot; 10 min</div>
+      <h2>Why Deploy?</h2>
+      <div class="subtitle">The difference between a demo and a product</div>
+    </div>
+    <div class="section-body">
+      <p>Your agent lives in your terminal. That works for interactive tasks. But real agents need to:</p>
+      <ul>
+        <li>Run on a schedule — <em>every Monday at 7am, generate the weekly brief</em></li>
+        <li>React to events — <em>intake form submitted &rarr; agent drafts proposal</em></li>
+        <li>Serve a web interface — <em>team asks questions from Slack or browser</em></li>
+        <li>Scale beyond one laptop</li>
+      </ul>
+      <p>That means putting it somewhere always-on.</p>
+      <div class="callout blue">
+        A tool that only runs when you're watching it is a demo.<br>
+        A tool that runs on its own is a product.<br>
+        <strong>Deployment is the line between those two things.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: THE MODERN TRIO -->
+  <div class="section" id="modern-trio">
+    <div class="section-header">
+      <div class="part-label">Part 2 &middot; 40 min</div>
+      <h2>The Modern Trio</h2>
+      <div class="subtitle">Three platforms handle ~80% of what small-business agents need</div>
+    </div>
+    <div class="section-body">
+
+      <!-- Vercel -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <span class="platform-name">Vercel</span>
+          <span class="platform-time">15 min</span>
+        </div>
+        <div class="platform-card-body">
+          <h3>What it is</h3>
+          <p>The platform for web front-ends and serverless APIs. Push to GitHub, Vercel deploys automatically.</p>
+          <h3>When to pick it</h3>
+          <ul>
+            <li>Your agent has a web interface or API</li>
+            <li>You want preview URLs on every pull request</li>
+            <li>Short-running tasks (under 5 minutes)</li>
+            <li>Zero-config deploys matter to you</li>
+          </ul>
+          <h3>Cost</h3>
+          <p>Generous free tier. Paid plan is $20/month.</p>
+          <h3>One-line deploy</h3>
+          <div class="code-block">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>npx vercel</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Railway -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <span class="platform-name">Railway</span>
+          <span class="platform-time">15 min</span>
+        </div>
+        <div class="platform-card-body">
+          <h3>What it is</h3>
+          <p>Platform for long-running services, workers, and persistent processes.</p>
+          <h3>When to pick it</h3>
+          <ul>
+            <li>Your agent polls for data or listens on a queue</li>
+            <li>Needs a process longer than 5 minutes</li>
+            <li>You want a database sitting right next to your code</li>
+          </ul>
+          <h3>Cost</h3>
+          <p>~$5&ndash;20/month for small projects.</p>
+          <h3>Deploy steps</h3>
+          <div class="step-list">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">Go to <strong>railway.app</strong> and sign up with GitHub.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">Click <strong>New Project &rarr; Deploy from GitHub repo</strong>.</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">Pick your repo. Railway auto-detects your stack and deploys.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Supabase -->
+      <div class="platform-card">
+        <div class="platform-card-header">
+          <span class="platform-name">Supabase</span>
+          <span class="platform-time">10 min</span>
+        </div>
+        <div class="platform-card-body">
+          <h3>What it is</h3>
+          <p>Postgres database + auth + storage + edge functions, bundled. Open source.</p>
+          <h3>When to pick it</h3>
+          <ul>
+            <li>You need a database (almost always)</li>
+            <li>You want auth without building it yourself</li>
+            <li>You need file storage</li>
+          </ul>
+          <h3>Cost</h3>
+          <p>Free tier is meaningful. Pro plan is $25/month.</p>
+          <div class="callout green">
+            <strong>The combo that runs most modern AI products:</strong><br>
+            Vercel or Railway for your agent's code + Supabase for its memory.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SECTION 3: BIG THREE OVERVIEW -->
+  <div class="section" id="big-three">
+    <div class="section-header">
+      <div class="part-label">Part 3 &middot; 20 min</div>
+      <h2>The Big Three: AWS, Azure, GCP</h2>
+      <div class="subtitle">Know when you'll be forced onto a hyperscaler</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Platform</th>
+            <th>Known for</th>
+            <th>When you'll be forced there</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AWS</strong></td>
+            <td>Everything, but complex. Market leader.</td>
+            <td>Client already on AWS; needs Bedrock or SageMaker.</td>
+          </tr>
+          <tr>
+            <td><strong>Azure</strong> (Microsoft)</td>
+            <td>Tight with M365, Teams, Copilot, enterprise-first.</td>
+            <td>Microsoft-shop clients, government, building inside Copilot.</td>
+          </tr>
+          <tr>
+            <td><strong>GCP</strong> (Google)</td>
+            <td>Data engineering, ML, BigQuery.</td>
+            <td>Data-heavy work, Google Workspace clients.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn">
+        <strong>Don't over-engineer.</strong> The modern trio handles real businesses up to millions in revenue. Only move to a hyperscaler when a real constraint forces it.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: DEPLOY ONE THING -->
+  <div class="section" id="deploy-it">
+    <div class="section-header">
+      <div class="part-label">Part 4 &middot; 40 min</div>
+      <h2>Deploy One Thing</h2>
+      <div class="subtitle">Each pair deploys something &mdash; even a trivial thing &mdash; by end of session</div>
+    </div>
+    <div class="section-body">
+      <p>Work in the capstone lead's folder. Pick one path below and follow it end to end.</p>
+
+      <h3>Path A &mdash; Vercel</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>npm create next-app@latest my-agent-ui
+cd my-agent-ui
+gh repo create my-agent-ui --public --source=. --push
+npx vercel</code></pre>
+      </div>
+
+      <h3>Path B &mdash; Railway</h3>
+      <p>Go to <strong>railway.app</strong> &rarr; sign up with GitHub &rarr; <strong>New Project &rarr; Deploy from GitHub</strong> &rarr; pick your repo &rarr; watch the logs.</p>
+
+      <div class="divider"></div>
+
+      <h3>Environment Variables</h3>
+      <p>Both platforms have a UI for env vars. You can also set them from the Vercel CLI:</p>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>vercel env add ANTHROPIC_API_KEY</code></pre>
+      </div>
+      <div class="security-rule">
+        <strong>Rule: Never put secrets in your code.</strong> Never commit an API key to GitHub. Always use env vars &mdash; on every platform, every time, no exceptions.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: SECURITY ESSENTIALS -->
+  <div class="section" id="security">
+    <div class="section-header">
+      <div class="part-label">Part 5 &middot; 30 min</div>
+      <h2>Security Essentials</h2>
+      <div class="subtitle">Four concrete areas &mdash; do this / don't do that</div>
+    </div>
+    <div class="section-body">
+      <p>You're now building agents that touch email, CRM, payments, and databases. This section is practical.</p>
+
+      <h3>1. Token Exposure (10 min)</h3>
+      <ul>
+        <li>Never commit a token to git. Even private repos &mdash; GitHub scans for them.</li>
+        <li>Never paste a token into Claude Code when you could use an env var. Logs get compacted and shared.</li>
+        <li>Always add <code>.env*</code> to <code>.gitignore</code>.</li>
+        <li>Rotate tokens quarterly. When someone leaves your team, rotate immediately.</li>
+        <li>Scope tokens to the minimum permissions needed.</li>
+      </ul>
+
+      <h3>Live check &mdash; run this in your repo</h3>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>git log --all --full-history -p | grep -iE "sk-ant-|ghp_|sk_live_|AKIA" | head</code></pre>
+      </div>
+      <div class="callout red">
+        If anything comes up: rotate those keys immediately, then look up <strong>git-filter-repo</strong> to scrub history.
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>2. AI-Generated Code Review (7 min)</h3>
+      <p>What to watch for in code Claude writes:</p>
+      <ul>
+        <li><strong>Silent failures:</strong> <code>try/except: pass</code> swallows errors. Claude sometimes adds these "defensively." They hide real bugs.</li>
+        <li><strong>SQL built by string concatenation:</strong> classic injection. Use parameterized queries.</li>
+        <li><strong>Over-broad permissions:</strong> Claude scaffolds Supabase policies that default to "everyone can read everything." Tighten before shipping.</li>
+        <li><strong>Shell commands built from unchecked user input:</strong> remote command execution bug. Use <code>subprocess</code> with a list, not a formatted shell string.</li>
+        <li><strong>Dependencies you've never heard of:</strong> Claude sometimes invents package names. Check every import against a real registry.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3>3. Row Level Security &mdash; Supabase (7 min)</h3>
+      <p>RLS is a policy that says even authenticated users only see rows they're allowed to see. Without RLS, any user with valid auth can read every row in your database.</p>
+      <div class="callout warn">
+        <strong>Default: RLS is OFF on new tables until you turn it on.</strong> Many data leaks happen because someone forgot this.
+      </div>
+      <ul>
+        <li>Enable RLS on every table that holds business data.</li>
+        <li>Policies are per-table, per-operation.</li>
+        <li>Default to deny. Test with a non-admin user.</li>
+      </ul>
+      <div class="code-block">
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+        <pre><code>alter table capstone_runs enable row level security;
+
+create policy "users read own runs"
+on capstone_runs for select
+using (auth.uid() = user_id);</code></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>4. Claude Code Permissions (6 min)</h3>
+      <ul>
+        <li>Use Plan Mode when you're not sure what Claude will do.</li>
+        <li>Your hooks from Session 5 earn their keep here &mdash; a <code>PreToolUse</code> hook can block destructive commands entirely.</li>
+        <li>Scope MCPs minimally. Gmail MCP for drafting doesn't need send permission. GitHub MCP for reading doesn't need repo-delete.</li>
+        <li>Run risky work in sandboxes &mdash; Codespaces, worktrees, test accounts.</li>
+        <li>Before letting Claude do something risky (delete files, push to prod, message customers), ask it to show you the exact command first.</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3>Minimum Viable Security Posture</h3>
+      <div class="callout green">
+        <ol style="padding-left: 18px; margin: 0;">
+          <li style="margin-bottom: 6px;">No secrets in git &mdash; verify with the grep scan above.</li>
+          <li style="margin-bottom: 6px;">RLS on every table holding business data.</li>
+          <li style="margin-bottom: 6px;">Tokens scoped minimally, rotated quarterly.</li>
+          <li style="margin-bottom: 6px;">AI-generated code reviewed before merging anything that touches data, auth, or external APIs.</li>
+          <li>One security-focused antagonist prompt in your pipeline.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: INCIDENT RESPONSE -->
+  <div class="section" id="incident-response">
+    <div class="section-header">
+      <div class="part-label">Part 6 &middot; 20 min</div>
+      <h2>Incident Response</h2>
+      <div class="subtitle">Every deployed agent will break &mdash; the question is whether you respond professionally</div>
+    </div>
+    <div class="section-body">
+      <p>The sequence. Memorize it.</p>
+
+      <div class="incident-step">
+        <div class="incident-num">1</div>
+        <div class="incident-body">
+          <div class="incident-title">Triage</div>
+          <p>Is a user blocked right now? Who's affected? What exactly is broken vs. what might be broken? One sentence each. Don't debug yet.</p>
+        </div>
+      </div>
+
+      <div class="incident-step">
+        <div class="incident-num">2</div>
+        <div class="incident-body">
+          <div class="incident-title">Contain</div>
+          <p>Stop the bleeding. Disable the agent, roll back to last-known-good, put up a "temporarily unavailable" state. Contain before you diagnose.</p>
+        </div>
+      </div>
+
+      <div class="incident-step">
+        <div class="incident-num">3</div>
+        <div class="incident-body">
+          <div class="incident-title">Diagnose</div>
+          <p>Use logs, not guesses. Find the specific run that failed, the specific input, the specific stage. If you can't reproduce from logs, your logs aren't good enough.</p>
+        </div>
+      </div>
+
+      <div class="incident-step">
+        <div class="incident-num">4</div>
+        <div class="incident-body">
+          <div class="incident-title">Communicate</div>
+          <p>Tell your sponsor before a user tells them. One message: what happened, who's affected, what you did, when you'll have more info.</p>
+        </div>
+      </div>
+
+      <div class="incident-step">
+        <div class="incident-num">5</div>
+        <div class="incident-body">
+          <div class="incident-title">Fix</div>
+          <p>Smallest change that addresses the root cause. Not a rewrite. The fix should be narrow enough to review in five minutes.</p>
+        </div>
+      </div>
+
+      <div class="incident-step">
+        <div class="incident-num">6</div>
+        <div class="incident-body">
+          <div class="incident-title">Prevent</div>
+          <p>Add an eval case that would have caught this specific failure. If your eval set wouldn't have caught it, the incident wasn't random &mdash; it was a gap in your process.</p>
+        </div>
+      </div>
+
+      <div class="callout blue" style="margin-top: 24px;">
+        The instinct is <em>"It's broken &rarr; fix it."</em><br>
+        The senior move is: <strong>contain first, communicate early, fix narrow, prevent permanently.</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: HOMEWORK -->
+  <div class="section" id="homework">
+    <div class="section-header">
+      <div class="part-label">Part 7 &middot; Homework</div>
+      <h2>Session 7 Homework</h2>
+      <div class="subtitle">Due before Session 8 &middot; Each pair completes together</div>
+    </div>
+    <div class="section-body">
+      <p>Run <code>/kp-session-7-homework</code> &mdash; or type <strong>"start kp session 7 homework"</strong> if the slash command doesn't fire. Work in the capstone lead's folder.</p>
+
+      <h3>What the skill does</h3>
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Audits your capstone</strong> against Session 8 demo requirements and flags gaps.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Proposes a minimal deployable slice</strong> &mdash; the smallest thing worth shipping before demo day.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>Walks you through the deploy</strong> for your chosen platform (Vercel or Railway), stopping at each step to verify.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body"><strong>Scaffolds your 7-minute demo script</strong> &mdash; saved to <code>artifacts/demo-script.md</code> with both partners' speaking parts marked. Rehearse it as a pair before Session 8.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body"><strong>Dry-runs the demo with you once</strong>, timing it and flagging anything that'll break live.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Artifact Checklist</h3>
+      <div class="artifact-checklist">
+        <h3>Before Session 8, each pair submits:</h3>
+        <ul>
+          <li>Something deployed &mdash; a live URL or Railway deployment that runs without your laptop open</li>
+          <li><code>deployment-checklist.md</code> &mdash; env vars set, logs enabled, evals run and passing, rollback path, cost cap</li>
+          <li>Post-change eval re-run: passing</li>
+          <li>Security audit output with critical findings closed (<code>/kp-security-audit</code>)</li>
+          <li><code>artifacts/demo-script.md</code> &mdash; 7-minute demo script with both partners' speaking parts, rehearsed at least once as a pair</li>
+          <li><code>incidents-response.md</code> &mdash; who you page, what you disable, what message you send &mdash; written before anything breaks</li>
+        </ul>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="next-up">
+        <div class="label">Next Session</div>
+        <p><strong>Session 8 &mdash; Demo Day.</strong> Open build lab then live demos. Every pair gets 7 minutes. Come with something working and a demo you've rehearsed.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  const text = pre.querySelector('code').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+</script>
+
+</body>
+</html>

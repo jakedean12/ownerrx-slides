@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx — Session 1</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.6;
+  }
+
+  .header {
+    background: #0f0f1a;
+    color: white;
+    padding: 40px 48px;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .header .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 10px;
+  }
+
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 48px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .toc a {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .section-header .part-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 6px;
+  }
+
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 12.5px;
+    background: #f1f5f9;
+    color: #7c3aed;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .code-block { position: relative; margin: 14px 0; }
+
+  pre {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  pre code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    white-space: pre;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout {
+    border-left: 3px solid #7c3aed;
+    background: #faf5ff;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #4c1d95;
+    line-height: 1.6;
+  }
+
+  .callout.warn  { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue  { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  /* Concept grid */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .concept-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: #f8fafc;
+  }
+
+  .concept-card .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 6px;
+  }
+
+  .concept-card .value { font-size: 14px; color: #1e293b; line-height: 1.5; }
+
+  /* Loop diagram */
+  .loop {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0;
+    margin: 20px 0;
+  }
+
+  .loop-step {
+    background: #0f172a;
+    color: #e2e8f0;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 10px 16px;
+    letter-spacing: 0.04em;
+    border-radius: 6px;
+  }
+
+  .loop-arrow { font-size: 16px; color: #94a3b8; padding: 0 8px; }
+
+  /* Checklist */
+  .checklist { list-style: none; margin: 14px 0; padding: 0; }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #334155;
+    padding-left: 0;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .check-box.checked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+  /* Artifact checklist */
+  .artifact-checklist {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 8px;
+  }
+
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+
+  /* Next up */
+  .next-up {
+    background: #0f0f1a;
+    color: #fff;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  .next-up .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 8px;
+  }
+
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">OwnerRx Internship Cohort · Session 1 of 11</div>
+  <h1>Welcome &amp; Setup</h1>
+  <p>Introductions &nbsp;·&nbsp; What this program is &nbsp;·&nbsp; The agent loop &nbsp;·&nbsp; GitHub setup</p>
+</div>
+
+<div class="toc">
+  <a href="#overview">Overview</a>
+  <a href="#loop">1 · Agent Loop</a>
+  <a href="#github">2 · GitHub</a>
+  <a href="#clone">3 · Clone Repo</a>
+  <a href="#onboard">4 · Onboarding</a>
+  <a href="#artifacts">✓ Wrap-up</a>
+</div>
+
+<div class="content">
+
+  <!-- WELCOME -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="part-label">Welcome</div>
+      <h2>Who we are and what we're doing here</h2>
+      <div class="subtitle">Before anything technical — introductions, context, and what the next 4 weeks actually look like.</div>
+    </div>
+    <div class="section-body">
+      <h3>Who is running this</h3>
+      <p><strong>Alan Pentz</strong> founded OwnerRx to solve a specific problem: business owners know AI is important but don't know how to actually deploy it inside their companies. OwnerRx trains owners and their teams to build real agents for real workflows — not demos, not tutorials, things that actually run. This program is that training, applied to a group of interns working on real company problems.</p>
+      <p><strong>Jake Dean</strong> is your facilitator. He runs the sessions, removes blockers, and connects you with the business owners you're building for. He is not the technical expert in the room — Claude is. Jake's job is to keep you moving.</p>
+
+      <div class="divider"></div>
+
+      <h3>Intern introductions</h3>
+      <p>Go around the room. Each person answers three questions — 60 seconds max:</p>
+      <ul>
+        <li>Your name and where you go to school</li>
+        <li>One sentence on your background with AI — have you used it? built with it? never touched it?</li>
+        <li>One word for how you feel about building AI agents for a real company</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3>What this program is</h3>
+      <p>11 sessions across 4 weeks. By the end, you will have built and shipped a working AI agent for a real company — a deployed, tested tool with a commit history that proves you built it. Not a tutorial project. Something you can show a future employer.</p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="label">Your capstone</div>
+          <div class="value">An AI agent scoped to a real company's workflow — you choose it in Session 5 after hearing from all the business owners</div>
+        </div>
+        <div class="concept-card">
+          <div class="label">The tool</div>
+          <div class="value">Claude Code — an AI that reads files, writes code, and runs terminal commands in a loop</div>
+        </div>
+        <div class="concept-card">
+          <div class="label">The repo</div>
+          <div class="value">Everything you build lives in the shared GitHub repo under your own protected folder</div>
+        </div>
+        <div class="concept-card">
+          <div class="label">This week</div>
+          <div class="value">Business owners present Tue + Thu. Listen for problems. You're not building yet — you're choosing what to build.</div>
+        </div>
+      </div>
+
+      <div class="callout blue"><strong>Today's only goal:</strong> Get your environment connected and make your first commit. That's it. No building, no decisions about what to build yet. Just get set up.</div>
+    </div>
+  </div>
+
+  <!-- AGENT LOOP -->
+  <div class="section" id="loop">
+    <div class="section-header">
+      <div class="part-label">Part 1</div>
+      <h2>The agent loop</h2>
+      <div class="subtitle">One concept before you touch anything — this is what Claude Code is actually doing.</div>
+    </div>
+    <div class="section-body">
+      <p>Most people think Claude is a chat window. Claude Code is something different. It runs a loop:</p>
+
+      <div class="loop">
+        <div class="loop-step">Read files</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-step">Think</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-step">Run a command</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-step">Observe</div>
+        <div class="loop-arrow">→</div>
+        <div class="loop-step">Loop</div>
+      </div>
+
+      <p>It reads your files to understand context. It thinks about what to do. It runs a shell command or writes code. It observes what happened. Then it loops — reading again, re-evaluating, acting again — until it decides the task is done.</p>
+
+      <div class="callout"><strong>Why this matters:</strong> When you understand the loop, you stop being a passenger. You can see what Claude is about to do, approve or reject it, and step in when it goes off course. That's the skill this program teaches.</div>
+
+      <h3>What this looks like in practice</h3>
+      <p>You say: <em>"Read the CSV in my folder and tell me which rows are missing a value."</em></p>
+      <p>Claude reads the CSV, figures out how to check for empty cells, runs a Python script, reads the output, then tells you which rows failed. You never typed a line of code. Your job is to give it good context and check what it's doing.</p>
+    </div>
+  </div>
+
+  <!-- GITHUB -->
+  <div class="section" id="github">
+    <div class="section-header">
+      <div class="part-label">Part 2</div>
+      <h2>Connect your GitHub account</h2>
+      <div class="subtitle">Authenticate the GitHub CLI so your terminal can talk to GitHub directly.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>Run this in your terminal</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh auth login</code></pre>
+      </div>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Where do you use GitHub?</strong> — select <code>GitHub.com</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>How would you like to authenticate?</strong> — select <code>Login with a web browser</code></div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">It prints a one-time code. Copy it, press Enter — your browser opens GitHub</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">Paste the code on the GitHub page and authorize the app</div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">Back in terminal you should see: <code>Logged in as your-username</code></div>
+        </div>
+      </div>
+
+      <h3>Verify it worked</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh auth status</code></pre>
+      </div>
+
+      <p>You should see a green checkmark and your GitHub username. If you see an error, stop here and let your facilitator know.</p>
+
+      <div class="callout blue"><strong>What is gh?</strong> The GitHub CLI — it lets you clone repos, open pull requests, and check status directly from your terminal. You'll use it every session.</div>
+    </div>
+  </div>
+
+  <!-- CLONE -->
+  <div class="section" id="clone">
+    <div class="section-header">
+      <div class="part-label">Part 3</div>
+      <h2>Clone the course repo</h2>
+      <div class="subtitle">Download a copy of the repo that stays connected to GitHub so you can push your work back up.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>Clone and navigate into it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh repo clone owner-rx/kp-academy
+cd kp-academy</code></pre>
+      </div>
+
+      <h3>Confirm you're in the right place</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>pwd</code></pre>
+      </div>
+
+      <p>You should see a path ending in <code>/kp-academy</code>. If it says <code>/tmp/...</code> or anything unexpected, stop and re-clone from your home folder.</p>
+
+      <h3>See what's inside</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>ls</code></pre>
+      </div>
+
+      <p>You'll see folders like <code>participants/</code>, <code>content/</code>, and <code>docs/</code>. Your work lives in <code>participants/your-github-username/</code> — a folder only you can write to.</p>
+
+      <div class="callout warn"><strong>Important:</strong> Only write inside your own <code>participants/</code> folder. The rest of the repo is CODEOWNERS-protected — Claude Code will warn you if you try to edit outside your folder.</div>
+    </div>
+  </div>
+
+  <!-- ONBOARDING -->
+  <div class="section" id="onboard">
+    <div class="section-header">
+      <div class="part-label">Part 4</div>
+      <h2>Open Claude Code and start your onboarding</h2>
+      <div class="subtitle">Claude runs an intake interview and writes your profile to the repo.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>Open Claude Code from inside the repo</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>claude</code></pre>
+      </div>
+
+      <p>Claude Code opens. You'll see a prompt. Type exactly this:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>start kp academy</code></pre>
+      </div>
+
+      <p>Claude runs an onboarding interview. It asks about your background, your interests, and what you already know about AI. Answer in your own words — this profile is what every future session reads first so Claude already knows who you are.</p>
+
+      <div class="divider"></div>
+
+      <h3>What Claude writes for you</h3>
+      <ul class="checklist" id="onboarding-list">
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span><code>about.md</code> — your background and profile. Every future session reads this first.</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span><code>progress.md</code> — your session tracker across the whole program.</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span><code>artifacts/</code> and <code>notes/</code> folders — where your work and notes will live.</span></li>
+        <li><span class="check-box" onclick="toggleCheck(this)"></span><span>Your first commit — pushed to GitHub with your name on it.</span></li>
+      </ul>
+
+      <div class="callout blue"><strong>No capstone today.</strong> You're not picking what to build yet. Business owners present this week — you'll hear from all of them before you decide. Your capstone is locked in Session 5.</div>
+    </div>
+  </div>
+
+  <!-- WRAP-UP -->
+  <div class="section" id="artifacts">
+    <div class="section-header">
+      <div class="part-label">Wrap-up</div>
+      <h2>Before you close out — confirm these are done</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Session 1 Checklist</h3>
+        <ul>
+          <li>GitHub CLI authenticated — <code>gh auth status</code> shows green</li>
+          <li>Repo cloned to your machine — <code>pwd</code> shows <code>/kp-academy</code></li>
+          <li>Onboarding complete — <code>about.md</code> written and committed</li>
+          <li>First commit visible on GitHub</li>
+        </ul>
+      </div>
+
+      <p style="margin-top: 16px;">If any of these aren't done, don't move on — reach out to your facilitator before Session 2.</p>
+
+      <div class="next-up">
+        <div class="label">Next — Session 2</div>
+        <p><strong>Design Your Approach</strong> &nbsp;·&nbsp; Operator Move 2 — turning business problems into defensible approaches, using Claude as a thought partner. Between now and then: business owners present Tue + Thu. <strong>Listen for problems you'd want to solve. That's your only homework.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(box) {
+    box.classList.toggle('checked');
+    box.textContent = box.classList.contains('checked') ? '✓' : '';
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

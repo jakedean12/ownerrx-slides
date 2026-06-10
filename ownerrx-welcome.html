@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx — Welcome to KP Academy</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+
+  .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 3px solid #7c3aed; }
+  .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+  .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+  .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .code-block { position: relative; margin: 14px 0; }
+  pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+  pre code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+  .callout.warn  { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue  { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 28px; height: 28px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  .os-tabs { display: flex; gap: 0; margin-bottom: 0; border-bottom: 1px solid #e2e8f0; }
+  .os-tab { padding: 10px 24px; font-size: 13px; font-weight: 700; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; }
+  .os-tab.active { color: #7c3aed; border-bottom-color: #7c3aed; }
+
+  .concept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .concept-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 18px; background: #f8fafc; }
+  .concept-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #94a3b8; margin-bottom: 6px; }
+  .concept-card .value { font-size: 14px; color: #1e293b; line-height: 1.5; }
+
+  .checklist { list-style: none; margin: 14px 0; padding: 0; }
+  .checklist li { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; font-size: 15px; color: #334155; }
+  .check-box { width: 20px; height: 20px; border: 2px solid #cbd5e1; border-radius: 4px; flex-shrink: 0; margin-top: 1px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; transition: background 0.15s, border-color 0.15s; }
+  .check-box.checked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+  .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+
+  .next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+  .next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+
+  .platform-badge { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; }
+  .platform-badge.mac { background: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; }
+  .platform-badge.win { background: #eff6ff; color: #1e3a5f; border: 1px solid #bfdbfe; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">OwnerRx · KP Academy · Summer 2026</div>
+  <h1>Welcome — Pre-Work Guide</h1>
+  <p>Complete everything on this page before Session 1 on June 15 &nbsp;·&nbsp; Takes about 45 minutes</p>
+</div>
+
+<div class="toc">
+  <a href="#how-it-works">How It Works</a>
+  <a href="#github">1 · GitHub</a>
+  <a href="#mac">2 · Mac Setup</a>
+  <a href="#windows">2 · Windows Setup</a>
+  <a href="#repo">3 · Clone the Repo</a>
+  <a href="#ready">✓ Ready Check</a>
+</div>
+
+<div class="content">
+
+
+  <!-- HOW IT WORKS -->
+  <div class="section" id="how-it-works">
+    <div class="section-header">
+      <div class="part-label">Before You Install Anything</div>
+      <h2>How KP Academy works</h2>
+      <div class="subtitle">The whole program lives in one GitHub repo. Here's how the pieces fit together.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>The repo is the course</h3>
+      <p>There's no website, no video portal, no LMS. When you clone the <code>kp-academy</code> repo to your computer, you have the entire course. Every session guide, every homework skill, and your own personal workspace all live inside it.</p>
+
+      <div class="callout blue"><strong>Your participant folder:</strong> When you run the onboarding command, Claude creates a folder at <code>participants/your-github-username/</code> that only you can write to. Everything you build across the program lives there — your notes, your agent code, your eval sets, your demo script.</div>
+
+      <div class="divider"></div>
+
+      <h3>Session slides</h3>
+      <p>Before each session, you'll get a link to that session's guide (like this one). The guide walks you through what you'll do in class — concepts, exercises, and copy-paste prompts for Claude Code. You follow along during the live session.</p>
+
+      <div class="divider"></div>
+
+      <h3>Homework skills</h3>
+      <p>After each session, you run a homework skill inside Claude Code. Type a command like <code>/kp-session-1-homework</code> and Claude reads your participant profile, then guides you through applied exercises tied to your specific capstone. No generic homework — everything is personalized to the company you're building for.</p>
+
+      <div class="callout warn"><strong>If a slash command doesn't fire:</strong> Type the natural phrase instead — <code>start kp session 1 homework</code>. This always works. Slash commands occasionally don't trigger; the phrase always does.</div>
+
+      <div class="divider"></div>
+
+      <h3>The Operator Track</h3>
+      <p>Woven through every session is a consulting skills thread called the Operator Track. Each session teaches a technical skill <em>and</em> one of five consulting moves — defining a problem, designing an approach, communicating, showing results, tracking your work. By Session 8 you have both a technical portfolio and a consulting portfolio.</p>
+
+      <div class="divider"></div>
+
+      <h3>What you need to do right now</h3>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Create a GitHub account</strong> — the repo lives here, your work gets committed here, your progress is tracked here. Takes 5 minutes.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Install Claude Code</strong> — the terminal app you'll use to build everything. Mac and Windows instructions are below. Takes 15–25 minutes.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>Clone the repo and run onboarding</strong> — this creates your participant folder and gets Claude reading your profile before Session 1.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GITHUB -->
+  <div class="section" id="github">
+    <div class="section-header">
+      <div class="part-label">Step 1</div>
+      <h2>Create your GitHub account</h2>
+      <div class="subtitle">GitHub is where your code lives. You'll use it every session.</div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout blue"><strong>Already have a GitHub account?</strong> Skip to the 2FA step and make sure it's enabled. Then move to Step 2.</div>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Go to github.com and click Sign up.</strong> Use an email you'll keep long-term — this is tied to your professional identity.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Pick your username carefully.</strong> This is public and hard to change later. Short, lowercase, your name or a close variant. Good: <code>jsmith</code>, <code>sarah-chen</code>. Avoid: <code>coder_xx_2026</code>, <code>ninjadev99</code>. If your name is taken, add a middle initial.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>Turn on 2-factor authentication — required.</strong> GitHub requires 2FA for anyone who pushes code. Settings → Password and authentication → Enable two-factor authentication. Use an authenticator app (1Password, Authy, or Google Authenticator). Save the recovery codes somewhere safe — you'll need them if you lose your phone.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body"><strong>Send your username to Jake.</strong> Once Jake adds you as a collaborator on the kp-academy repo, you'll receive an email invitation. Accept it before trying to clone.</div>
+        </div>
+      </div>
+
+      <div class="callout warn"><strong>Wait for the invitation email before moving to Step 3.</strong> You can't clone the repo until Jake adds you. Steps 1 and 2 (this page and the install) you can do immediately.</div>
+
+    </div>
+  </div>
+
+  <!-- MAC SETUP -->
+  <div class="section" id="mac">
+    <div class="section-header">
+      <div class="part-label">Step 2 — Mac</div>
+      <h2>Install Claude Code on a Mac</h2>
+      <div class="subtitle">Open Terminal (⌘ + Space, type "terminal") and run these commands one at a time.</div>
+    </div>
+    <div class="section-body">
+
+      <div class="platform-badge mac">Mac</div>
+
+      <h3>1. Install Homebrew</h3>
+      <p>Homebrew is the Mac package manager — it makes installing everything else one command. Paste this into Terminal:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code></pre>
+      </div>
+      <p style="font-size:13px;color:#64748b;">It asks for your Mac password. Let it run — takes 5–10 minutes.</p>
+
+      <div class="divider"></div>
+
+      <h3>2. Install Node.js, Git, and the GitHub CLI</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>brew install node git gh</code></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>3. Install Claude Code</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+      </div>
+
+      <div class="callout warn"><strong>Permission error?</strong> Don't use <code>sudo</code>. Fix it with this instead:
+        <div class="code-block" style="margin-top:10px;">
+          <button class="copy-btn">Copy</button>
+          <pre><code>mkdir -p ~/.npm-global
+npm config set prefix ~/.npm-global
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc</code></pre>
+        </div>
+        Then retry the install command above.
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>4. Install a code editor (recommended)</h3>
+      <p>Claude Code works in any terminal, but having a code editor open alongside helps you watch files change.</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>brew install --cask visual-studio-code</code></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>5. Verify everything installed</h3>
+      <p>Run all four commands. Each should print a version number — not an error.</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>node --version
+git --version
+gh --version
+claude --version</code></pre>
+      </div>
+      <div class="callout green"><strong>All four print numbers?</strong> You're ready. Move to Step 3 (connect Claude to Anthropic) below.</div>
+
+      <div class="divider"></div>
+
+      <h3>6. Sign in to Claude Code</h3>
+      <p>You've been provided a Claude Code Pro account. Run <code>claude</code> and follow the browser login prompt — it will ask you to sign in with your claude.ai account.</p>
+
+      <h3>7. Confirm Claude Code starts</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>claude</code></pre>
+      </div>
+      <p>You should see Claude Code start up. Type <code>exit</code> to quit. If it starts — Mac setup is complete. Skip to Step 3 (Clone the Repo).</p>
+
+    </div>
+  </div>
+
+  <!-- WINDOWS SETUP -->
+  <div class="section" id="windows">
+    <div class="section-header">
+      <div class="part-label">Step 2 — Windows</div>
+      <h2>Install Claude Code on Windows</h2>
+      <div class="subtitle">Two paths. WSL is recommended — it gives you a real Linux environment that Claude Code expects.</div>
+    </div>
+    <div class="section-body">
+
+      <div class="platform-badge win">Windows</div>
+
+      <h3>Option A: WSL (recommended)</h3>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Install WSL.</strong> Open PowerShell as Administrator (right-click Start → Windows PowerShell (Admin)) and run:
+            <div class="code-block" style="margin-top:10px;">
+              <button class="copy-btn">Copy</button>
+              <pre><code>wsl --install</code></pre>
+            </div>
+            Restart your computer when asked. After reboot, Ubuntu will finish installing and prompt you to create a Linux username and password. Keep them simple — this is separate from your Windows login.
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>Open Ubuntu</strong> (search "Ubuntu" in Start menu) and run these commands:
+            <div class="code-block" style="margin-top:10px;">
+              <button class="copy-btn">Copy</button>
+              <pre><code>sudo apt update && sudo apt upgrade -y
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+
+sudo apt install -y git
+
+curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+sudo apt update && sudo apt install -y gh
+
+npm install -g @anthropic-ai/claude-code</code></pre>
+            </div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>Verify all four commands print version numbers:</strong>
+            <div class="code-block" style="margin-top:10px;">
+              <button class="copy-btn">Copy</button>
+              <pre><code>node --version
+git --version
+gh --version
+claude --version</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Option B: Native Windows (only if WSL won't install)</h3>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Install Node.js</strong> — download the LTS installer from <strong>nodejs.org</strong>, run with defaults.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Install Git</strong> — download from <strong>git-scm.com</strong>. During setup pick "Use Git from the command line" and "Checkout as-is, commit as-is".</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Install GitHub CLI</strong> — open PowerShell and run:
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>winget install --id GitHub.cli</code></pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Install Claude Code</strong> — open PowerShell (not Admin):
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>npm install -g @anthropic-ai/claude-code</code></pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Verify:</strong> same four commands as above.</div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-body"><strong>Install VS Code</strong> from code.visualstudio.com. If on WSL, also install the "WSL" extension.</div></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Sign in to Claude Code (Windows)</h3>
+      <p>You've been provided a Claude Code Pro account. Run <code>claude</code> and follow the browser login prompt — it will ask you to sign in with your claude.ai account.</p>
+
+      <h3>Confirm Claude Code starts</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>claude</code></pre>
+      </div>
+      <p>Should see Claude Code start up. Type <code>exit</code> to quit. If it starts — Windows setup is complete.</p>
+
+      <div class="callout blue"><strong>Backup plan — GitHub Codespaces:</strong> If your setup won't work no matter what, go to github.com → any repo → Code → Codespaces → Create codespace. You get a full VS Code in your browser with everything pre-installed. Run <code>npm install -g @anthropic-ai/claude-code</code> in the terminal and you're ready. You get 60 free hours/month.</div>
+
+    </div>
+  </div>
+
+  <!-- CLONE THE REPO -->
+  <div class="section" id="repo">
+    <div class="section-header">
+      <div class="part-label">Step 3</div>
+      <h2>Clone the KP Academy repo and run onboarding</h2>
+      <div class="subtitle">Do this after Jake adds you as a collaborator and you accept the invitation email.</div>
+    </div>
+    <div class="section-body">
+
+      <div class="callout warn"><strong>Waiting on an invitation?</strong> You can't clone until Jake adds you. Complete Steps 1 and 2 first, then come back here once you have the invitation email from GitHub.</div>
+
+      <div class="divider"></div>
+
+      <h3>1. Authenticate with GitHub</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh auth login</code></pre>
+      </div>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Select <strong>GitHub.com</strong></div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Select <strong>HTTPS</strong></div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Select <strong>Login with a web browser</strong> — copy the one-time code, open the browser tab, paste it, authorize</div></div>
+      </div>
+
+      <p>Verify it worked:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh auth status</code></pre>
+      </div>
+      <p>You should see your username with a green checkmark. If you see an error, stop here and reach out to Jake.</p>
+
+      <div class="divider"></div>
+
+      <h3>2. Clone the repo</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>cd ~
+gh repo clone owner-rx/kp-academy
+cd kp-academy</code></pre>
+      </div>
+
+      <p>Confirm you're in the right place:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>pwd</code></pre>
+      </div>
+      <p>Should end in <code>/kp-academy</code>.</p>
+
+      <p>See what's inside:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>ls</code></pre>
+      </div>
+      <p>You'll see folders like <code>participants/</code>, <code>content/</code>, and <code>docs/</code>. Your work will live in <code>participants/your-github-username/</code> — a folder only you can write to.</p>
+
+      <div class="callout warn"><strong>Only write inside your own <code>participants/</code> folder.</strong> The rest of the repo is protected — Claude Code will warn you if you try to edit outside your folder.</div>
+
+      <div class="divider"></div>
+
+      <h3>3. Open Claude Code and confirm it works</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>claude</code></pre>
+      </div>
+
+      <p>Claude Code should open. You'll see a prompt. Type <code>What is this repo?</code> — Claude will read the files and describe the project. That confirms everything is working.</p>
+
+      <p>Type <code>exit</code> when done. That's it for pre-work.</p>
+
+      <div class="callout green"><strong>You'll run your full onboarding in Session 1.</strong> Nothing else to do here — just confirm Claude Code opens and responds.</div>
+
+    </div>
+  </div>
+
+  <!-- READY CHECK -->
+  <div class="section" id="ready">
+    <div class="section-header">
+      <div class="part-label">Final Check</div>
+      <h2>Confirm you're ready for Monday</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Pre-Work Checklist</h3>
+        <ul>
+          <li>GitHub account created with 2FA enabled</li>
+          <li>GitHub username sent to Jake</li>
+          <li>Invitation email from GitHub accepted</li>
+          <li><code>node --version</code> prints v18 or higher</li>
+          <li><code>git --version</code> prints a version number</li>
+          <li><code>gh --version</code> prints a version number</li>
+          <li><code>claude --version</code> prints a version number</li>
+          <li><code>gh auth status</code> shows your username with a green checkmark</li>
+          <li>kp-academy repo cloned — <code>pwd</code> ends in <code>/kp-academy</code></li>
+          <li>Claude Code opens and responds to a message</li>
+          <li>Joined the KP Academy Slack</li>
+        </ul>
+      </div>
+
+      <p style="margin-top: 16px;">If anything on this list isn't done, post in the <strong>#help</strong> channel on Slack — don't wait until Monday morning.</p>
+
+      <div class="next-up">
+        <div class="label">Session 1 — Monday June 15 at 10 AM</div>
+        <p><strong>Welcome + Setup</strong> &nbsp;·&nbsp; Introductions, OwnerRx background, what this program is, and your first real Claude Code session. <strong>Bring your laptop, fully charged. Setup should already be done.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(box) {
+    box.classList.toggle('checked');
+    box.textContent = box.classList.contains('checked') ? '✓' : '';
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

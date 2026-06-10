@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx — Session 3</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.6;
+  }
+
+  .header {
+    background: #0f0f1a;
+    color: white;
+    padding: 40px 48px;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .header .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 10px;
+  }
+
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 48px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .toc a {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .section-header .part-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 6px;
+  }
+
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 12.5px;
+    background: #f1f5f9;
+    color: #7c3aed;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .code-block { position: relative; margin: 14px 0; }
+
+  pre {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  pre code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    white-space: pre;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout {
+    border-left: 3px solid #7c3aed;
+    background: #faf5ff;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #4c1d95;
+    line-height: 1.6;
+  }
+
+  .callout.warn  { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue  { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+  td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+
+  .mode-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+
+  .mode-card h4 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .mode-card p { font-size: 14px; color: #475569; margin: 0; }
+  .mode-card .shortcut { font-size: 12px; font-weight: 600; background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 4px; border: 1px solid #e2e8f0; margin-left: 8px; }
+
+  .artifact-checklist {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 8px;
+  }
+
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+
+  .next-up {
+    background: #0f0f1a;
+    color: #fff;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  .next-up .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 8px;
+  }
+
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">OwnerRx Internship Cohort · Session 3 of 11</div>
+  <h1>Steering Claude Code</h1>
+  <p>CLAUDE.md &nbsp;·&nbsp; Plan Mode &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Slash Commands</p>
+</div>
+
+<div class="toc">
+  <a href="#intro">Intro</a>
+  <a href="#claudemd">1 · CLAUDE.md</a>
+  <a href="#skills">2 · Skills</a>
+  <a href="#slash">3 · Slash Commands</a>
+  <a href="#quickhits">4 · Quick Hits</a>
+  <a href="#artifacts">✓ Wrap-up</a>
+</div>
+
+<div class="content">
+
+  <!-- INTRO -->
+  <div class="section" id="intro">
+    <div class="section-header">
+      <div class="part-label">Before We Start</div>
+      <h2>What today does</h2>
+      <div class="subtitle">Right now Claude Code starts every session knowing nothing about you or your project. Today you fix that permanently.</div>
+    </div>
+    <div class="section-body">
+      <p>Every session so far, Claude has needed you to explain what you're working on before it could help you. That's fine for two sessions. It won't scale when you're deep in a build sprint and just want to get something done.</p>
+      <p>Today you configure Claude Code so it already knows your project — your background, your approach, your guardrails — before you type a single word. You also learn how to control <em>how</em> Claude acts, not just what you ask it to do.</p>
+
+      <table>
+        <tr><th>What</th><th>What it does for you</th></tr>
+        <tr><td><strong>CLAUDE.md</strong></td><td>A file Claude reads first every session. You write the briefing once — Claude knows your project forever.</td></tr>
+        <tr><td><strong>Skills</strong></td><td>Encode a recurring workflow once. Claude runs it automatically when you describe the task.</td></tr>
+        <tr><td><strong>Slash Commands</strong></td><td>Same as Skills but you trigger them manually by typing /name. For workflows you want on demand.</td></tr>
+      </table>
+
+      <div class="callout blue"><strong>By the end of this session:</strong> Claude Code is configured for your project. Every future session starts with full context already loaded.</div>
+    </div>
+  </div>
+
+  <!-- CLAUDE.md -->
+  <div class="section" id="claudemd">
+    <div class="section-header">
+      <div class="part-label">Part 1 · ~40 min</div>
+      <h2>CLAUDE.md — The Standing Briefing</h2>
+      <div class="subtitle">Make Claude read your project context before every single session.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>What it is</h3>
+      <p>CLAUDE.md is a file Claude reads automatically every time you open Claude Code in a project. Without it, every session starts from zero. With it, Claude already knows what you're working on, what the rules are, and what it should never do.</p>
+
+      <div class="callout">Think of it as a permanent sticky note on Claude's desk. You write it once and it applies to every conversation forever — until you change it.</div>
+
+      <h3>Where it lives</h3>
+      <table>
+        <tr><th>Location</th><th>Scope</th><th>Use it for</th></tr>
+        <tr><td><code>~/.claude/CLAUDE.md</code></td><td>Every project on your machine</td><td>Personal preferences — your name, how you like responses</td></tr>
+        <tr><td><code>kp-academy/CLAUDE.md</code></td><td>This repo only</td><td>Course context — what you're building for this program</td></tr>
+        <tr><td><code>subfolder/CLAUDE.md</code></td><td>That folder only</td><td>Advanced — skip for now</td></tr>
+      </table>
+
+      <p>Today you're writing the repo-level one inside your own participant folder.</p>
+
+      <div class="divider"></div>
+
+      <h3>Find your GitHub username first</h3>
+      <p>Every file path in this session uses your GitHub username. Run this to find yours:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>gh api user -q .login</code></pre>
+      </div>
+      <p>It prints your username. Use that everywhere you see <code>YOUR-USERNAME</code> below.</p>
+
+      <div class="divider"></div>
+
+      <h3>Write it</h3>
+      <p>Open Claude Code in your kp-academy folder:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>cd ~/kp-academy
+claude</code></pre>
+      </div>
+
+      <p>Paste this prompt — replace <code>YOUR-USERNAME</code> with your actual GitHub username:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Create a CLAUDE.md file at participants/YOUR-USERNAME/CLAUDE.md. Read my about.md and operator/approach-memo.md first, then write four sections: (1) Who I am and what I'm working on, (2) The business problem I'm investigating, (3) The approach I've chosen and why, (4) A Don'ts section — at least 3 specific things you should never do when helping me. Each Don't should describe something you would plausibly do wrong, not something obvious like "don't break things."</code></pre>
+      </div>
+
+      <div class="callout warn"><strong>Read every section before accepting.</strong> The Don'ts section especially — "never do anything dangerous" is useless. Each Don't should be specific to your project. For example: never suggest approaches that require data the business owner hasn't authorized access to, never write files outside my participant folder, never skip asking for clarification when the task is ambiguous.</div>
+
+      <h3>Test it</h3>
+      <p>Close Claude Code completely. Reopen it in the same folder. Then ask — without explaining anything first:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>What are we working on and what are your guardrails?</code></pre>
+      </div>
+
+      <div class="callout green"><strong>If it answers correctly from the CLAUDE.md — commit it.</strong> If it's vague, the briefing isn't specific enough. Sharpen the first two sections until Claude can answer that question cold.</div>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/YOUR-USERNAME/CLAUDE.md
+git commit -m "Add CLAUDE.md — project briefing and guardrails"
+git push</code></pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="section" id="skills">
+    <div class="section-header">
+      <div class="part-label">Part 2 · ~25 min</div>
+      <h2>Skills — Encoding Reusable Workflows</h2>
+      <div class="subtitle">Stop explaining the same task every session. Write it once and Claude runs it automatically.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>What a Skill is</h3>
+      <p>A Skill is a markdown file in <code>.claude/skills/</code> inside your project. It has two parts: a description at the top (how Claude decides when to use it) and a body (what to do step by step).</p>
+
+      <div class="callout"><strong>The description is the most important line.</strong> It's how Claude decides whether to fire this Skill. If it's vague, the Skill never triggers. If it's specific, Claude picks it up reliably.</div>
+
+      <p>Example of a good description:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Use when the user asks to review the approach memo, check whether the problem statement is specific enough, or evaluate whether an approach is defensible.</code></pre>
+      </div>
+
+      <p>Bad description: <em>"Use for my project stuff."</em> — too vague, will never trigger reliably.</p>
+
+      <div class="divider"></div>
+
+      <h3>Create your first Skill</h3>
+      <p>First make the skills folder — replace <code>YOUR-USERNAME</code> with your GitHub username:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>mkdir -p participants/YOUR-USERNAME/.claude/skills</code></pre>
+      </div>
+
+      <p>Then paste this prompt into Claude Code:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Write a Skill called approach-review and save it to participants/YOUR-USERNAME/.claude/skills/approach-review.md. It should: read my operator/approach-memo.md, check whether the chosen path is clearly stated, whether the rejected paths have real reasons, and whether the first risk is honest — then give me specific feedback on what to sharpen. The description should trigger when I ask to review my approach, check if my memo is defensible, or get feedback on my problem statement.</code></pre>
+      </div>
+
+      <h3>Test it</h3>
+      <p>Open a fresh Claude Code session. Don't type the Skill name. Just say something that matches the description naturally:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>review my approach and tell me what needs to be sharper</code></pre>
+      </div>
+
+      <div class="callout green">If Claude picks it up and runs the Skill — commit it. If it doesn't fire, the description needs to be more specific. Edit it and try again.</div>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/YOUR-USERNAME/.claude/
+git commit -m "Add approach-review skill"
+git push</code></pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SLASH COMMANDS -->
+  <div class="section" id="slash">
+    <div class="section-header">
+      <div class="part-label">Part 3 · ~15 min</div>
+      <h2>Slash Commands — On-Demand Workflows</h2>
+      <div class="subtitle">Same format as Skills — but you trigger them manually by typing /name.</div>
+    </div>
+    <div class="section-body">
+
+      <p>Skills are automatic — Claude infers when to use them. Slash commands are manual — you type <code>/name</code> and it runs. Same file format, same folder. That's the only difference.</p>
+
+      <p>Use slash commands for workflows you want to run deliberately, on demand. A good first slash command: one that generates a project status update you could send to a business owner.</p>
+
+      <div class="divider"></div>
+
+      <h3>Create /operator-status</h3>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Write a slash command called operator-status and save it to participants/YOUR-USERNAME/.claude/skills/operator-status.md. It should read my operator/operator-log.md and operator/approach-memo.md, then generate a one-paragraph status update I could send to a business owner. Include: what I've defined so far, what approach I'm taking, and what my next question is for them. Keep it in plain English — no jargon.</code></pre>
+      </div>
+
+      <h3>Test it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>/operator-status</code></pre>
+      </div>
+
+      <div class="callout warn">If the output is too generic, add a line to the Skill file about your specific audience — who you'd actually send this to and what they care about. Then test again.</div>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/YOUR-USERNAME/.claude/
+git commit -m "Add operator-status slash command"
+git push</code></pre>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- QUICK HITS -->
+  <div class="section" id="quickhits">
+    <div class="section-header">
+      <div class="part-label">Part 4 · ~10 min</div>
+      <h2>Quick Hits — Three Things That Trip Everyone Up</h2>
+    </div>
+    <div class="section-body">
+
+      <table>
+        <tr><th>Thing</th><th>What it actually is</th></tr>
+        <tr>
+          <td><strong>Glob vs Grep</strong></td>
+          <td><strong>Glob</strong> finds files by name — <code>*.md</code> finds all markdown files. <strong>Grep</strong> finds text inside files — <code>grep "risk"</code> searches the content. Completely different tools. When Claude runs five searches that should have been one, it's almost always using the wrong one.</td>
+        </tr>
+        <tr>
+          <td><strong>/clear vs new session</strong></td>
+          <td><code>/clear</code> drops the conversation but keeps CLAUDE.md and Skills loaded — faster, still a clean slate. A new session (<code>exit</code> then <code>claude</code>) re-reads everything from scratch. Use <code>/clear</code> when context feels cluttered. Use a new session when something feels fundamentally wrong.</td>
+        </tr>
+        <tr>
+          <td><strong>Headless mode</strong></td>
+          <td><code>claude -p "your prompt"</code> runs Claude Code without opening the interactive session. You can call it from a script or chain it into a pipeline. You won't need this today — but you will in Session 6 when we connect Claude to real systems.</td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  <!-- WRAP-UP -->
+  <div class="section" id="artifacts">
+    <div class="section-header">
+      <div class="part-label">Wrap-up</div>
+      <h2>Before you close out — 3 things committed</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Session 3 Checklist</h3>
+        <ul>
+          <li><code>participants/YOUR-USERNAME/CLAUDE.md</code> — project briefing tested and committed</li>
+          <li><code>participants/YOUR-USERNAME/.claude/skills/approach-review.md</code> — Skill tested and committed</li>
+          <li><code>participants/YOUR-USERNAME/.claude/skills/operator-status.md</code> — Slash command tested and committed</li>
+        </ul>
+      </div>
+
+      <div class="next-up">
+        <div class="label">Next — Session 4</div>
+        <p><strong>Capstone Selection + Agent Architectures</strong> &nbsp;·&nbsp; After hearing from all the business owners this week, you'll lock your capstone at the start of Session 4 and start building. Come ready to decide. <strong>No prep needed — just show up.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

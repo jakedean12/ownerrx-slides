@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx — Session 2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #f8fafc;
+    color: #1e293b;
+    line-height: 1.6;
+  }
+
+  .header {
+    background: #0f0f1a;
+    color: white;
+    padding: 40px 48px;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .header .kicker {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 10px;
+  }
+
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc {
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 16px 48px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+
+  .toc a {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .section-header .part-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 6px;
+  }
+
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 12.5px;
+    background: #f1f5f9;
+    color: #7c3aed;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .code-block { position: relative; margin: 14px 0; }
+
+  pre {
+    background: #0f172a;
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  pre code {
+    font-family: "JetBrains Mono", "Fira Code", Menlo, monospace;
+    font-size: 13.5px;
+    line-height: 1.8;
+    color: #e2e8f0;
+    white-space: pre;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 5px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout {
+    border-left: 3px solid #7c3aed;
+    background: #faf5ff;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #4c1d95;
+    line-height: 1.6;
+  }
+
+  .callout.warn  { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue  { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    background: #7c3aed;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    margin-top: 1px;
+  }
+
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+
+  .approach-box {
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+
+  .approach-box-header {
+    background: #0f172a;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .approach-box-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #7c3aed;
+  }
+
+  .approach-box-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-left: 8px;
+  }
+
+  .approach-box-body {
+    padding: 18px 20px;
+    background: #f8fafc;
+  }
+
+  .approach-box-body p {
+    font-size: 14px;
+    color: #475569;
+    margin-bottom: 8px;
+  }
+
+  .move-track {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+
+  .move-chip {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    background: white;
+  }
+
+  .move-chip.active {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: white;
+  }
+
+  .checklist { list-style: none; margin: 14px 0; padding: 0; }
+
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    font-size: 15px;
+    color: #334155;
+    padding-left: 0;
+  }
+
+  .check-box {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #cbd5e1;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .check-box.checked { background: #7c3aed; border-color: #7c3aed; color: #fff; }
+
+  .artifact-checklist {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 8px;
+  }
+
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+
+  .next-up {
+    background: #0f0f1a;
+    color: #fff;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-top: 8px;
+  }
+
+  .next-up .label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #7c3aed;
+    margin-bottom: 8px;
+  }
+
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">OwnerRx Internship Cohort · Session 2 of 11</div>
+  <h1>Design Your Approach</h1>
+  <p>Operator Move 2 &nbsp;·&nbsp; From request to problem &nbsp;·&nbsp; Defensible approaches &nbsp;·&nbsp; Claude as thought partner</p>
+</div>
+
+<div class="toc">
+  <a href="#operator-track">Operator Track</a>
+  <a href="#request-to-problem">1 · Request → Problem</a>
+  <a href="#design-approach">2 · Design an Approach</a>
+  <a href="#claude-partner">3 · Claude as Thought Partner</a>
+  <a href="#three-modes">4 · Three Modes</a>
+  <a href="#artifacts">✓ Wrap-up</a>
+</div>
+
+<div class="content">
+You are not teaching technology today. You are teaching consulting. Every exercise in this session is discussion-first — you ask the question, interns answer, Claude helps them pressure-test. When someone asks "what kind of agent would solve this?", your answer is: <strong>"Ask Claude that right now and read us what it says."</strong> Your job is to keep the room moving and make sure every intern leaves with a written approach — not a perfect one, a real one.
+  </div>
+
+  <!-- OPERATOR TRACK -->
+  <div class="section" id="operator-track">
+    <div class="section-header">
+      <div class="part-label">Context</div>
+      <h2>The Operator Track — where you are today</h2>
+      <div class="subtitle">Five consulting moves woven through every session. Today is Move 2.</div>
+    </div>
+    <div class="section-body">
+      <p>Every session in this program teaches a technical skill <em>and</em> a consulting move. The technical skill is what you build. The consulting move is how you make the build worth anything to a real company.</p>
+
+      <div class="move-track">
+        <div class="move-chip">Move 1 · Define the Problem</div>
+        <div class="move-chip active">Move 2 · Design an Approach ← you are here</div>
+        <div class="move-chip">Move 3 · Communicate</div>
+        <div class="move-chip">Move 4 · Show Results</div>
+        <div class="move-chip">Move 5 · Track the Work</div>
+      </div>
+
+      <table>
+        <tr><th>Move</th><th>What it is</th><th>When</th></tr>
+        <tr><td><strong>1 — Define</strong></td><td>Turn a vague ask into a sharp, testable problem statement</td><td>Session 1</td></tr>
+        <tr><td><strong>2 — Design</strong></td><td>Pick a path, name the alternatives you rejected, name the first risk</td><td>Session 2 — today</td></tr>
+        <tr><td><strong>3 — Communicate</strong></td><td>Written updates in the client's language. One paragraph, not five.</td><td>Sessions 3, 5</td></tr>
+        <tr><td><strong>4 — Show Results</strong></td><td>Demos that prove the problem moved, not that code runs</td><td>Sessions 6, 8</td></tr>
+        <tr><td><strong>5 — Track</strong></td><td>Audit trail, decisions, handoff — so someone can pick it up without you</td><td>Throughout</td></tr>
+      </table>
+
+      <div class="callout blue"><strong>Why Move 2 comes before any building:</strong> Most AI projects fail because someone built the wrong thing confidently. A defensible approach catches that before the first line of code is written — it's cheap to change a memo, expensive to change a pipeline.</div>
+    </div>
+  </div>
+
+  <!-- PART 1: REQUEST TO PROBLEM -->
+  <div class="section" id="request-to-problem">
+    <div class="section-header">
+      <div class="part-label">Part 1 · ~20 min</div>
+      <h2>From Request to Problem</h2>
+      <div class="subtitle">What someone tells you is never the whole story. This is how you find the real thing underneath.</div>
+    </div>
+    <div class="section-body">
+      <p>The first thing anyone tells you about a problem is a <strong>request</strong>, not a problem. A request tells you what they want built. A problem tells you why it matters, who it hurts, and what "fixed" actually looks like.</p>
+
+      <div class="approach-box">
+        <div class="approach-box-header">
+          <div class="approach-box-label">Request</div>
+          <div class="approach-box-title">"We need an agent that summarizes our client calls."</div>
+        </div>
+        <div class="approach-box-body">
+          <p>That's what someone says. The problem underneath it might be:</p>
+          <p><em>"Partners spend 4 hours a week writing recap emails after calls. 30% of those emails go out late or get skipped — which makes clients feel dropped. That's a retention problem, not a writing problem."</em></p>
+          <p>Now you know what to build, who feels the pain, and what "fixed" looks like. The request was "build a summarizer." The problem was "partners are losing the thread on follow-ups."</p>
+        </div>
+      </div>
+
+      <h3>Three questions that get you from request to problem</h3>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>Who feels the pain, specifically?</strong> A name and a role, not "the team." If you can't name one person who goes home on Friday frustrated because of this problem, the problem isn't real yet.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>What does the current bad version look like?</strong> What is actually happening today that shouldn't be? Be concrete — hours per week, errors per month, things that get missed, decisions that take too long.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>What does "fixed" look like?</strong> One measurable thing. Not "more efficient." Not "better." Something you could count in 60 days and know whether you moved it.</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Exercise — Apply the three questions now</h3>
+      <p>Think about what you heard from the guest speaker yesterday. Pick one problem they described. Apply the three questions out loud — your facilitator will write answers on the board.</p>
+
+      <div class="callout warn"><strong>If you can't answer all three:</strong> you don't have a problem yet. You have a starting point for better questions. Write down what's missing — those gaps are what you'd ask the business owner next time.</div>
+
+      <div class="callout green"><strong>The output of this exercise:</strong> one sentence per question. Three sentences total. That's the seed of your problem statement — you'll develop it fully in homework.</div>
+    </div>
+  </div>
+
+  <!-- PART 2: DESIGN AN APPROACH -->
+  <div class="section" id="design-approach">
+    <div class="section-header">
+      <div class="part-label">Part 2 · ~30 min</div>
+      <h2>Design an Approach You Can Defend</h2>
+      <div class="subtitle">The path you chose, the paths you rejected, and the first thing that could go wrong.</div>
+    </div>
+    <div class="section-body">
+      <p>Once you have a problem, there are usually three to five ways to solve it. Your job is to pick one — and be able to explain why you picked it over the others. That's a defensible approach.</p>
+
+      <p>A defensible approach has exactly three parts:</p>
+
+      <div class="step-list">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body"><strong>The path you chose</strong> — what you're going to build and how it solves the problem you defined</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body"><strong>The paths you rejected</strong> — what you considered and why they lose. This is the part most people skip. Don't skip it.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body"><strong>The first risk</strong> — the single thing most likely to go wrong, and what you'd do about it</div>
+        </div>
+      </div>
+
+      <div class="callout"><strong>Why the rejected paths matter:</strong> They show you thought about it. They prevent the meeting where someone says "but did you consider X?" and you have to admit you didn't. And they leave a record for whoever picks up the work after you.</div>
+
+      <div class="divider"></div>
+
+      <h3>See it in practice</h3>
+      <p>Using the call-summary problem from Part 1:</p>
+
+      <div class="approach-box">
+        <div class="approach-box-header">
+          <div class="approach-box-label">Chosen path</div>
+          <div class="approach-box-title">A Claude Code agent that drafts recap emails from call transcripts</div>
+        </div>
+        <div class="approach-box-body">
+          <p>Partners get a draft in their inbox within 5 minutes of a call ending. They review, edit in their voice, send. Total time: under 5 minutes per call instead of 20–30.</p>
+        </div>
+      </div>
+
+      <div class="approach-box">
+        <div class="approach-box-header">
+          <div class="approach-box-label">Rejected paths</div>
+          <div class="approach-box-title">Two alternatives considered</div>
+        </div>
+        <div class="approach-box-body">
+          <p><strong>A Zapier automation:</strong> Loses. Partners want to edit before sending — Zapier would send without review. One bad auto-sent email to a client kills the whole experiment.</p>
+          <p><strong>A part-time VA:</strong> Loses on cost and speed. A VA adds a person to the loop when the constraint is the loop itself.</p>
+        </div>
+      </div>
+
+      <div class="approach-box">
+        <div class="approach-box-header">
+          <div class="approach-box-label">First risk</div>
+          <div class="approach-box-title">Transcript quality varies — bad input produces unusable output</div>
+        </div>
+        <div class="approach-box-body">
+          <p>Mitigation: start with partners who use a transcription tool with reliable output (Fireflies, Otter). Don't try to fix transcript quality in v1 — validate the workflow first.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Exercise — Draft your approach</h3>
+      <p>Using the problem you defined in Part 1, draft your three-part approach on paper or in a notes app. You have 10 minutes. It doesn't need to be polished — it needs to be real.</p>
+
+      <ul>
+        <li>One sentence on the path you're choosing</li>
+        <li>Two approaches you're rejecting and why each loses</li>
+        <li>One sentence on the biggest risk</li>
+      </ul>
+
+      <p>When time is up, one volunteer reads theirs out loud. The room asks: <em>"Does this defend itself?"</em></p>
+    </div>
+  </div>
+
+  <!-- PART 3: CLAUDE AS THOUGHT PARTNER -->
+  <div class="section" id="claude-partner">
+    <div class="section-header">
+      <div class="part-label">Part 3 · ~25 min</div>
+      <h2>Claude as Your Thought Partner</h2>
+      <div class="subtitle">Three prompts that stress-test any approach before you commit to building it.</div>
+    </div>
+    <div class="section-body">
+      <p>You have a draft approach. Now use Claude to pressure-test it. Claude is not going to build anything in this part — it's going to think alongside you.</p>
+
+      <p>Open Claude Code in your kp-academy folder:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>cd ~/kp-academy
+claude</code></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Prompt 1 — Generate alternatives you might have missed</h3>
+      <p>Paste your problem statement, then ask:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Here's a business problem: [paste your problem statement in one paragraph].
+
+What are three different ways an AI agent could solve this? For each approach, describe what it does, what it would cost in time to build, and one situation where it would fail.</code></pre>
+      </div>
+
+      <p>Read what Claude says. Did it surface an approach you hadn't considered? If yes — is it better than yours, or does yours still win? Add the best new option to your rejected-paths list.</p>
+
+      <div class="divider"></div>
+
+      <h3>Prompt 2 — Find the first failure</h3>
+      <p>Describe your chosen approach, then ask:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Here's the approach I'm planning: [describe your chosen path in 2-3 sentences].
+
+What is the single most likely reason this fails in the first 30 days? Be specific — not "technical issues" but the exact thing that breaks.</code></pre>
+      </div>
+
+      <p>If Claude names a risk you hadn't thought of, update your first-risk section. If it names the same one you had, your instinct was right.</p>
+
+      <div class="divider"></div>
+
+      <h3>Prompt 3 — Write the one-paragraph memo</h3>
+      <p>Now ask Claude to draft the deliverable:</p>
+
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Based on everything above, write a one-paragraph approach memo I could put on a business owner's desk. Include: what I'm building and why, what I considered and rejected, and the first risk I'm watching. Write it in plain English, no jargon, one paragraph.</code></pre>
+      </div>
+
+      <div class="callout green"><strong>This paragraph is the artifact.</strong> It's what you'd send a sponsor before starting a build. Save it — you'll refine it in homework and it becomes part of your operator portfolio.</div>
+
+      <div class="divider"></div>
+
+      <h3>Share back</h3>
+      <p>Pick two people to read their approach memo paragraph out loud. The room listens for: Is the problem clear? Does the chosen path defend itself? Is the risk honest?</p>
+
+      <div class="callout blue"><strong>When listening to another pair's memo:</strong> Ask "does this defend itself?" Good feedback sounds like: "I don't understand who feels this pain" or "why does option B actually lose?"</div>
+    </div>
+  </div>
+
+  <!-- PART 4: THREE MODES -->
+  <div class="section" id="three-modes">
+    <div class="section-header">
+      <div class="part-label">Part 4 · ~15 min</div>
+      <h2>The Three Modes — Choosing How Claude Thinks</h2>
+      <div class="subtitle">Default, Plan Mode, and Thinking Mode. One question tells you which to use.</div>
+    </div>
+    <div class="section-body">
+      <p>Claude Code has three ways of operating. The question that picks the right one: <strong>"Am I about to change something, or am I asking Claude to think?"</strong></p>
+
+      <table>
+        <tr><th>Mode</th><th>When to use it</th><th>How to activate</th></tr>
+        <tr>
+          <td><strong>Default</strong></td>
+          <td>Research, questions, explanations — anything that doesn't write or change files</td>
+          <td>Just type your prompt</td>
+        </tr>
+        <tr>
+          <td><strong>Plan Mode</strong></td>
+          <td>Any time Claude is about to write, edit, or delete something. It shows you the plan first — you approve before it acts.</td>
+          <td>Press <code>Shift+Tab</code> before your prompt — or type <code>/plan</code></td>
+        </tr>
+        <tr>
+          <td><strong>Thinking Mode</strong></td>
+          <td>Hard decisions, ambiguous problems, architecture choices — situations where reasoning out loud leads to a better answer</td>
+          <td>Start your prompt with <code>think hard —</code></td>
+        </tr>
+      </table>
+
+      <div class="callout warn"><strong>The most common mistake:</strong> using Default mode when Claude is about to write files. Default mode acts immediately — if Claude misunderstood your prompt, the file is already changed. Use Plan Mode any time files are involved.</div>
+
+      <div class="divider"></div>
+
+      <h3>Exercise — Run your approach memo through all three</h3>
+      <p>Use the business problem you've been working with today. Run the same prompt in three modes and notice what changes.</p>
+
+      <p><strong>Run 1 — Default:</strong> Just paste your problem and ask Claude what agent would solve it.</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Based on this problem: [your problem statement]. What kind of AI agent would solve this?</code></pre>
+      </div>
+
+      <p><strong>Run 2 — Plan Mode:</strong> Press <code>Shift+Tab</code> first, then ask Claude to save the approach memo to a file.</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Save my approach memo to a file called approach-notes.md in the current folder. Here's the content: [paste your memo paragraph].</code></pre>
+      </div>
+      <p style="font-size:13px;color:#64748b;margin-top:-6px;">Plan Mode shows you what it's about to write before writing it. Review the plan — if it looks right, approve it.</p>
+
+      <p><strong>Run 3 — Thinking Mode:</strong> Add "think hard" and ask Claude to evaluate your chosen approach vs the alternatives.</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>think hard — Here are three approaches to solving [your problem]: [list them]. Which approach is most defensible given that the business owner wants [what they care about]? Show your reasoning.</code></pre>
+      </div>
+
+      <p>After all three runs: which mode felt most useful for consulting work vs building work? That's the intuition you're building.</p>
+    </div>
+  </div>
+
+  <!-- WRAP-UP -->
+  <div class="section" id="artifacts">
+    <div class="section-header">
+      <div class="part-label">Wrap-up</div>
+      <h2>Before you close out — confirm these are done</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Session 2 Checklist</h3>
+        <ul>
+          <li>Applied the three questions to a real business problem from the guest session</li>
+          <li>Drafted a three-part approach: chosen path, rejected paths, first risk</li>
+          <li>Used Claude to generate alternatives, find the first failure, and write the memo paragraph</li>
+          <li>Ran one prompt in all three Claude modes and noted the difference</li>
+        </ul>
+      </div>
+
+      <p style="margin-top: 16px;">Your approach memo paragraph isn't finished — it's a draft. Homework sharpens it into a real consulting artifact. Bring it to Session 3.</p>
+
+      <div class="next-up">
+        <div class="label">Next — Session 3</div>
+        <p><strong>CLAUDE.md · Plan Mode · Skills</strong> &nbsp;·&nbsp; You'll write the standing briefing that tells Claude who you are and what you're building — so you stop re-explaining your project at the start of every session. Then you'll encode your first reusable workflow as a Skill. <strong>No prep needed — just show up with your approach memo.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleCheck(box) {
+    box.classList.toggle('checked');
+    box.textContent = box.classList.contains('checked') ? '✓' : '';
+  }
+
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

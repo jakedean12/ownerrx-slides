@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx — Session 4</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+  .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 1px solid #1e293b; }
+  .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+  .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+  .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+  .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+  .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+  .section-body { padding: 28px 32px; }
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+  code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .code-block { position: relative; margin: 14px 0; }
+  pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+  pre code { font-family: "JetBrains Mono", "Fira Code", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+  .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+  td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .pattern-card { border: 1px solid #e2e8f0; border-radius: 8px; padding: 14px 16px; background: #f8fafc; }
+  .pattern-card .label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 4px; }
+  .pattern-card .value { font-size: 13px; color: #334155; line-height: 1.5; }
+  .exercise-header { display: flex; align-items: center; gap: 10px; margin: 20px 0 12px; }
+  .exercise-tag { display: inline-block; background: #ede9fe; color: #5b21b6; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; border: 1px solid #ddd6fe; }
+  .exercise-tag.demo { background: #fef3c7; color: #92400e; border-color: #fde68a; }
+  .exercise-tag.concept { background: #eff6ff; color: #1e40af; border-color: #bfdbfe; }
+  .timing-label { font-size: 12px; font-weight: 600; color: #94a3b8; }
+  .diagram-box { background: #0f172a; border-radius: 8px; padding: 20px 24px; margin: 14px 0; font-family: "JetBrains Mono", Menlo, monospace; font-size: 12px; color: #e2e8f0; line-height: 2; overflow-x: auto; }
+  .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+  .next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+  .next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">OwnerRx Internship Cohort · Session 4 of 11</div>
+  <h1>Agent Architectures + Loop Mechanics</h1>
+  <p>Partners &nbsp;·&nbsp; Capstone Selection &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Subagents &nbsp;·&nbsp; Pipelines &nbsp;·&nbsp; Antagonist Evaluators</p>
+</div>
+
+<div class="toc">
+  <a href="#partners">Partners</a>
+  <a href="#shareback">Shareback</a>
+  <a href="#primitives">Primitives</a>
+  <a href="#skills">Skills</a>
+  <a href="#plugins">Plugins</a>
+  <a href="#subagents">Subagents</a>
+  <a href="#loop">Loop Mechanics</a>
+  <a href="#pipelines">Pipelines</a>
+  <a href="#homework">Homework</a>
+</div>
+
+<div class="content">
+
+  <div class="section" id="partners">
+    <div class="section-header">
+      <div class="part-label">Opening · 20 min</div>
+      <h2>Partner Assignment + Capstone Selection</h2>
+      <div class="subtitle">You heard from all the business owners. Now you decide what you're building — and who you're building it with.</div>
+    </div>
+    <div class="section-body">
+      <h3>Partners</h3>
+      <p>Jake announces partner assignments. Every capstone is a two-person project. Partners were matched based on company interest and background — you'll work together from today through the final demo.</p>
+      <div class="callout blue"><strong>How the repo works for pairs:</strong> Each person keeps their own participant folder for their individual learning record (<code>about.md</code>, <code>operator-log.md</code>, <code>progress.md</code>). One partner is the <strong>capstone lead</strong> — all shared build artifacts (<code>pipeline/</code>, <code>evals/</code>, <code>agents/</code>, deployed code) live in the lead's folder. Both partners commit there during build sessions.</div>
+      <div class="divider"></div>
+      <h3>Capstone selection</h3>
+      <p>Each pair states their capstone in one sentence:</p>
+      <div class="callout"><em>"We're building an agent that [does what] for [company name] to solve [the problem]."</em></div>
+      <p>If deciding between two options, use this tiebreaker:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Which problem is more repetitive?</strong> The best agents automate something that happens weekly. Pick the higher-frequency problem.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Which company gave you more data to work with?</strong> An agent with no real data isn't really an agent.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Which problem can you define "done" for in 3 weeks?</strong> Smaller and shippable beats ambitious and incomplete.</div></div>
+      </div>
+      <div class="callout green"><strong>Once you've said it out loud — that's your capstone.</strong> Write it in one sentence right now. This is the first line of your <code>capstone.md</code>, which you'll create in homework tonight.</div>
+    </div>
+  </div>
+
+  <div class="section" id="shareback">
+    <div class="section-header">
+      <div class="part-label">Part 1 · 10 min</div>
+      <h2>Homework Shareback</h2>
+      <div class="subtitle">Who got their CLAUDE.md, skill, and slash command working? What surprised you?</div>
+    </div>
+    <div class="section-body">
+      <p>Go around the room. Each pair answers two questions:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Did it work?</strong> CLAUDE.md in place, skill created, slash command triggering. Yes, no, or partially — all three are valid.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>What surprised you?</strong> One thing Claude did that you didn't expect — good or bad.</div></div>
+      </div>
+      <div class="callout green"><strong>Key insight:</strong> The reason some skills triggered and others didn't comes down to one line — the <code>description</code> field. That's what this session is about.</div>
+    </div>
+  </div>
+
+  <div class="section" id="primitives">
+    <div class="section-header">
+      <div class="part-label">Part 2 · 15 min</div>
+      <h2>The Four Primitives</h2>
+      <div class="subtitle">Every modern AI platform is built from these four things.</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>Primitive</th><th>What it is</th><th>What it gives you</th></tr>
+        <tr><td><strong>Skill</strong></td><td>A saved Markdown file that tells Claude how to do something when a trigger matches</td><td>Repeatability — your best prompts become reusable workflows</td></tr>
+        <tr><td><strong>Plugin</strong></td><td>A bundle of skills, connectors, and subagents shipped as one installable package</td><td>Distribution — share an entire workflow with your team</td></tr>
+        <tr><td><strong>Subagent</strong></td><td>A fresh Claude instance spawned for a sub-task, with its own context window</td><td>Parallel speed + specialization</td></tr>
+        <tr><td><strong>Connector</strong></td><td>A pipe to external data or tools — Gmail, GitHub, Supabase, your CRM</td><td>Reach beyond files on your disk</td></tr>
+      </table>
+      <div class="callout blue"><strong>Where you are in the course:</strong> Session 3 introduced Skills at a basic level. This session goes deeper into all four as architecture. Session 6 is entirely about Connectors.</div>
+      <div class="callout">Every AI product you'll use or build — Salesforce Einstein, Microsoft Copilot, your company's internal chatbot — is some combination of these four things. You now have the vocabulary to describe any AI system.</div>
+    </div>
+  </div>
+
+  <div class="section" id="skills">
+    <div class="section-header">
+      <div class="part-label">Part 3 · 30 min</div>
+      <h2>Skills: Teaching Claude Your Work</h2>
+      <div class="subtitle">Encode how you want things done — once — and every future session follows that pattern.</div>
+    </div>
+    <div class="section-body">
+      <div class="exercise-header"><span class="exercise-tag concept">Concept</span><span class="timing-label">5 min</span></div>
+      <p>A skill is a Markdown file in <code>.claude/skills/</code>. When you give Claude a prompt, it reads the description of every skill it has access to. If your prompt matches, that skill's instructions load automatically before Claude responds.</p>
+
+      <h3>Anatomy of a good skill</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>---
+name: weekly-brief
+description: Use when the user asks for a weekly summary, Monday brief, or this-week roundup
+---
+
+When generating a weekly brief:
+1. Read `notes/` for anything new this week
+2. Structure output as: Highlights / Decisions / Risks / Next Week
+3. Keep each section to 3 bullets max
+4. End with one "ask" — something I need to decide
+
+Quality criteria:
+- Every bullet names a specific thing (no "various updates")
+- The "ask" is actionable this week, not aspirational</code></pre>
+      </div>
+
+      <div class="pattern-grid">
+        <div class="pattern-card"><div class="label">1 — Context</div><div class="value">What does Claude need to know? Which files, what project, who the audience is.</div></div>
+        <div class="pattern-card"><div class="label">2 — Instructions</div><div class="value">The steps in order. Specific enough for a new employee following a checklist.</div></div>
+        <div class="pattern-card"><div class="label">3 — Output format</div><div class="value">Exactly what the result should look like — headers, length, tone.</div></div>
+        <div class="pattern-card"><div class="label">4 — Quality criteria</div><div class="value">What makes this output good vs. bad? The self-check Claude runs before returning.</div></div>
+      </div>
+
+      <div class="callout green"><strong>The <code>description</code> field is the most important line.</strong> It's not a label — it's a trigger. Describe <em>when</em> to fire, not what it does.<br><br><strong>Good:</strong> "Use when the user asks for a weekly summary, Monday brief, or this-week roundup"<br><strong>Bad:</strong> "This is a skill for writing weekly summaries"</div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag">Live Exercise</span><span class="timing-label">20 min</span></div>
+
+      <p>Each pair creates one skill for their capstone. Work in the capstone lead's folder. This skill should encode a workflow you'll run repeatedly.</p>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Create the skills directory:</strong>
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>cd ai-agents-workshop
+mkdir -p .claude/skills</code></pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Open Claude Code and use this prompt:</strong>
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>Create a `.claude/skills/[my-use-case].md` skill that does [describe the workflow] when I ask for [describe the trigger phrase]. Include the four parts: context, instructions, output format, and quality criteria.</code></pre></div>
+        </div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Read the skill.</strong> Does the description describe a trigger or a task? If a task, ask Claude to rewrite it as a trigger.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Test it.</strong> Type the trigger phrase and watch whether Claude applies the skill. If it doesn't fire, ask Claude why.</div></div>
+      </div>
+
+      <div class="callout warn"><strong>Common mistake:</strong> Vague instructions — "write a good summary" instead of "3 bullets per section, each naming a specific deliverable." Vague criteria produce vague output.</div>
+    </div>
+  </div>
+
+  <div class="section" id="plugins">
+    <div class="section-header">
+      <div class="part-label">Part 4 · 15 min</div>
+      <h2>Plugins: Shipping a Whole Workflow</h2>
+      <div class="subtitle">A plugin bundles related skills, subagents, and connectors into one installable package.</div>
+    </div>
+    <div class="section-body">
+      <p>A skill is one workflow. A plugin is a collection of workflows plus the agents and connections they depend on — bundled so the whole thing installs in one step.</p>
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>my-sales-plugin/
+├── skills/
+│   ├── qualify-lead.md
+│   ├── draft-followup.md
+│   └── score-deal.md
+├── agents/
+│   └── competitive-researcher.md
+├── mcp/
+│   └── hubspot-connector.json
+└── plugin.json</code></pre></div>
+      <p>A plugin is just a folder of files — no binary, no compiled code. It lives in GitHub. Version it, update it in one place, everyone gets the update.</p>
+      <div class="callout green"><strong>Skills are for you. Plugins are for your team.</strong> A plugin is the unit of distribution.</div>
+      <div class="callout blue"><strong>A plugin marketplace is emerging.</strong> Internship projects that get published will be the ones with real business value — something to keep in mind as you design your capstone.</div>
+    </div>
+  </div>
+
+  <div class="section" id="subagents">
+    <div class="section-header">
+      <div class="part-label">Part 5 · 20 min</div>
+      <h2>Subagents: Parallel Work</h2>
+      <div class="subtitle">A subagent is a fresh Claude instance spawned for a sub-task, with its own context window.</div>
+    </div>
+    <div class="section-body">
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Parallel speed.</strong> Research 5 competitors simultaneously instead of sequentially. A 10-minute task might take 2 minutes with 5 subagents running at once.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Context protection.</strong> Long tool outputs stay inside the subagent. The main thread stays focused on high-level decisions.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Specialization.</strong> Each subagent has its own system prompt. Your research subagent can be ruthlessly concise. Your writing subagent can match your brand voice.</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag demo">Live Demo</span><span class="timing-label">10 min</span></div>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>Research these three competitors in parallel using separate subagents for each: [Company A], [Company B], [Company C]. For each: what they do, who their target customer is, and one thing they do better than everyone else. Give me a comparison table when all three are done.</code></pre></div>
+
+      <p>Watch Claude spawn three parallel tasks. Then run this counter-example:</p>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>Read README.md and tell me what it says.</code></pre></div>
+
+      <p>Claude doesn't spawn a subagent for this. Subagents have overhead — use them when work is <em>independent</em> and <em>chunky</em>.</p>
+
+      <div class="callout warn"><strong>Common mistake — over-spawning:</strong> Don't spawn a subagent to read one file or answer one question. Ask: "Could I do these tasks in parallel if I had more hands?" If yes, subagents help. "Does each task need the previous one's result?" If yes, use a pipeline.</div>
+    </div>
+  </div>
+
+  <div class="section" id="loop">
+    <div class="section-header">
+      <div class="part-label">Part 5B · 25 min</div>
+      <h2>Loop Mechanics, Hub-and-Spoke &amp; Session Resumption</h2>
+      <div class="subtitle">How the agent loop actually works — and why it sometimes doesn't stop when you want it to.</div>
+    </div>
+    <div class="section-body">
+      <div class="exercise-header"><span class="exercise-tag concept">Concept 1 — The Agent Loop</span><span class="timing-label">5 min</span></div>
+
+      <div class="diagram-box">user prompt → model decides → tool call → tool result → model decides → ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(returns final response — no more tool calls)</div>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Why does the loop terminate?</strong> Because the model produces a turn <em>without</em> a tool call. No tool call = "I'm done." This is how every agent in every framework works.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Why does it sometimes NOT terminate?</strong> Because the tool keeps returning data the model interprets as needing more action. Open-ended goals ("keep improving until it's perfect") may never terminate. Always define what "done" looks like.</div></div>
+      </div>
+
+      <div class="callout warn"><strong>Common mistake:</strong> "Research this topic thoroughly" invites an infinite loop. "Research this topic and give me the top 5 findings, then stop" gives the loop a clear exit condition.</div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag concept">Concept 2 — Hub-and-Spoke vs Pipeline</span><span class="timing-label">8 min</span></div>
+
+      <table>
+        <tr><th>Shape</th><th>Pattern</th><th>When it wins</th></tr>
+        <tr><td><strong>Pipeline</strong></td><td>A → B → C, each step feeds the next</td><td>Sequential workflows. Can't route until you classify. Can't classify until you extract.</td></tr>
+        <tr><td><strong>Hub-and-spoke</strong></td><td>One orchestrator delegates to N specialists, then collects</td><td>Parallel work; or when the next step depends on a combination of all outputs.</td></tr>
+      </table>
+
+      <div class="callout green"><strong>Most real-world workflows combine both shapes.</strong> Learn to see them and you can describe any agent architecture to anyone.</div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag concept">Concept 3 — Session Resumption</span><span class="timing-label">5 min</span></div>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>claude --resume &lt;conversation-id&gt;</code></pre></div>
+
+      <div class="pattern-grid">
+        <div class="pattern-card"><div class="label">Use resumption when</div><div class="value">You walked away from a long-running task. Pick up exactly where you left off, full context intact.</div></div>
+        <div class="pattern-card"><div class="label">Don't use resumption when</div><div class="value">Starting a new unrelated task. Stale context bleeds in and produces worse results. Use <code>/clear</code> instead.</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag concept">Concept 4 — Provenance</span><span class="timing-label">5 min</span></div>
+
+      <p>When work flows through multiple agents, you need to trace any output back to where it came from. Every agent output should carry a small header:</p>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code># Agent: research-agent
+# Prompt version: v1.2
+# Input ID: ticket-2026-0042
+# Timestamp: 2026-06-04T14:32:00Z</code></pre></div>
+
+      <div class="callout green"><strong>Provenance is not optional for production agents.</strong> Without it, debugging a 5-agent pipeline is guessing. With it, you know exactly which agent produced the bad result and which prompt version was running.</div>
+    </div>
+  </div>
+
+  <div class="section" id="pipelines">
+    <div class="section-header">
+      <div class="part-label">Part 6 · 25 min</div>
+      <h2>Pipelines + Antagonist Evaluators</h2>
+      <div class="subtitle">Specialized agents handing off to each other — with an adversarial agent that catches what the generator missed.</div>
+    </div>
+    <div class="section-body">
+      <p>A single agent has blind spots — it generates output and evaluates its own output with the same biases. Pipelines fix this: specialized agents hand off, with an antagonist whose entire job is to find problems.</p>
+
+      <div class="diagram-box">Research Agent → Draft Agent → Antagonist Evaluator
+gathers context     produces output     critiques, scores, flags weaknesses
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(if score below threshold → loop back to Draft)</div>
+
+      <ul>
+        <li>The <strong>generator agent</strong> tries to produce output that satisfies the prompt. Its bias is toward completion and confidence.</li>
+        <li>The <strong>antagonist agent</strong> has a different system prompt: "Find everything wrong with this. Score it. Flag every weakness." Its bias is toward criticism.</li>
+        <li>Two opposing biases produce better results than one agent evaluating its own work.</li>
+      </ul>
+
+      <div class="callout green"><strong>This is why code review exists.</strong> And peer review. And red teams. The pattern is ancient — you're encoding it in software. The generator wants to be right. The antagonist wants to find the error. You need both.</div>
+      <div class="callout warn"><strong>Watch for this:</strong> A weak antagonist will just rephrase the draft instead of critiquing it. Your homework evaluator checks for exactly this. An antagonist that agrees with everything is useless.</div>
+
+      <div class="divider"></div>
+      <div class="exercise-header"><span class="exercise-tag">Live Build</span><span class="timing-label">15 min</span></div>
+
+      <p>Each pair builds a 3-agent pipeline for their capstone task. Work in the capstone lead's folder.</p>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>I want to build a 3-agent pipeline for my capstone task: [describe your task].
+
+Create three agent files in `.claude/agents/`:
+1. `research.md` — focused on gathering context and raw information
+2. `draft.md` — focused on producing structured output from the research
+3. `antagonist.md` — focused on finding problems, not rephrasing the draft
+
+Each file should have: a name, a system prompt for its specific role, and instructions on what it receives and what it should produce.
+
+Then write a skill in `.claude/skills/run-pipeline.md` that orchestrates all three in sequence.</code></pre></div>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Read the three agent files.</strong> Is each system prompt focused on one job? A research agent that also tries to write should be split.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Run the pipeline</strong> on a real piece of data from your capstone domain. Watch the handoffs.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Run the same task without the pipeline.</strong> Compare outputs. What did the antagonist catch?</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Check your antagonist.</strong> Ask Claude: "Did it find a real problem, or just rephrase the draft? What's the evidence?"</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="hooks-preview">
+    <div class="section-header">
+      <div class="part-label">Part 7 · 5 min</div>
+      <h2>Quick Hooks Preview</h2>
+      <div class="subtitle">Session 5 is entirely about hooks. Here's what's coming.</div>
+    </div>
+    <div class="section-body">
+      <p>Hooks are scripts Claude Code runs automatically at specific events — not because you asked, but because you configured it to. They turn "Claude should do X" from a suggestion into a rule.</p>
+      <div class="callout blue"><strong>The difference between skills and hooks:</strong> A skill tells Claude <em>how</em> to do something when asked. A hook fires <em>automatically</em> at a specific event, whether you asked or not. Skills are about quality. Hooks are about enforcement.</div>
+      <p>If you're curious before Session 5, ask Claude Code: "What hooks does Claude Code support and how do I configure them?"</p>
+    </div>
+  </div>
+
+  <div class="section" id="homework">
+    <div class="section-header">
+      <div class="part-label">Homework · ~2 hours</div>
+      <h2>Session 4 Homework</h2>
+      <div class="subtitle">Build your pipeline, run it on real data, and start your eval set.</div>
+    </div>
+    <div class="section-body">
+      <p>All shared build work goes in the <strong>capstone lead's</strong> <code>participants/&lt;lead-username&gt;/</code> folder. Both partners commit there. Commit everything before next session.</p>
+
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code>/kp-session-4-homework</code></pre></div>
+      <div class="callout warn"><strong>If the slash command doesn't fire:</strong> Type <code>start kp session 4 homework</code> instead. The natural phrase always works.</div>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Reads your capstone</strong> from <code>capstone.md</code> and proposes a 3-agent pipeline tailored to your business problem.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Scaffolds the three agents</strong> into <code>artifacts/pipeline/</code> with starter system prompts.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Runs the pipeline on real data</strong> you provide. Output saved to <code>artifacts/pipeline/runs/</code>.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Compares outputs</strong> — single agent vs. pipeline with antagonist, side by side.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Grades your antagonist.</strong> Checks whether it actually critiqued or just rephrased. If it scores low, prompts you to improve and re-run.</div></div>
+      </div>
+
+      <div class="divider"></div>
+      <h3>Also — build your eval set</h3>
+      <p>Create <code>artifacts/evals/</code> and add 10–20 test cases. At least 2 must be adversarial — inputs designed to make your agent fail. For each case:</p>
+      <div class="code-block"><button class="copy-btn">Copy</button><pre><code># Eval Case: [short description]
+
+## Input
+[a real example from your domain]
+
+## Expected behavior
+[what the agent should produce]
+
+## Failure condition
+[what would indicate the agent handled this incorrectly]
+
+## Human review required?
+[yes / no — and why]</code></pre></div>
+
+      <div class="artifact-checklist">
+        <h3>Session 4 Artifacts</h3>
+        <ul>
+          <li><code>capstone.md</code> — one-sentence capstone committed to the lead's folder</li>
+          <li><code>artifacts/pipeline/</code> — three agent files + orchestrating skill</li>
+          <li><code>artifacts/pipeline/runs/</code> — at least one run comparing single-agent vs pipeline</li>
+          <li><code>artifacts/evals/</code> — 10+ eval cases including at least 2 adversarial</li>
+        </ul>
+      </div>
+
+      <div class="next-up">
+        <div class="label">Next — Session 5</div>
+        <p><strong>Hooks + Guardrails</strong> &nbsp;·&nbsp; Your pipeline runs. Now we make it safe. PreToolUse hooks, PostToolUse audit logs, structured errors, and validation-retry loops. <strong>Bring your capstone — the whole session is hands-on.</strong></p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+</script>
+</body>
+</html>
