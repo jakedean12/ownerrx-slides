@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OwnerRx Summer Internship Cohort — 2026</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    line-height: 1.65;
+    color: #1a1a1a;
+    background: #ffffff;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 60px 48px 80px;
+  }
+
+  .header {
+    border-bottom: 2px solid #1a1a1a;
+    padding-bottom: 20px;
+    margin-bottom: 36px;
+  }
+
+  .org {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: normal;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid #d0d0d0;
+    margin-bottom: 48px;
+  }
+
+  .meta-item {
+    padding: 14px 18px;
+    border-right: 1px solid #d0d0d0;
+  }
+
+  .meta-item:last-child { border-right: none; }
+
+  .meta-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  .meta-value {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  h2 {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 16px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .schedule { margin-bottom: 52px; }
+
+  .session-row {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    border-bottom: 1px solid #e8e8e8;
+    padding: 16px 0;
+  }
+
+  .session-row:first-child { border-top: 1px solid #e8e8e8; }
+  .session-row.cancelled { opacity: 0.4; }
+
+  .session-date {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: #555;
+    padding-top: 2px;
+    padding-right: 16px;
+  }
+
+  .session-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #999;
+    margin-bottom: 2px;
+  }
+
+  .session-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 4px;
+  }
+
+  .session-desc {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .tag {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border: 1px solid #ccc;
+    color: #555;
+  }
+
+  .tag-operator { border-color: #1a1a1a; color: #1a1a1a; }
+  .tag-guest { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .tag-guest-tbd { border: 1px dashed #888; color: #888; background: #fff; }
+  .tag-cancelled { border-color: #bbb; color: #bbb; }
+  .guest-row { background: #fafafa; }
+
+  .zoom-block {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #f0f7ff;
+    border-left: 3px solid #2563eb;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: #1e3a5f;
+  }
+
+  .zoom-block .zoom-label {
+    font-weight: 700;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #2563eb;
+    margin-bottom: 4px;
+  }
+
+  .zoom-block a {
+    color: #2563eb;
+    word-break: break-all;
+  }
+
+  .zoom-block .zoom-pw {
+    margin-top: 3px;
+    color: #475569;
+  }
+
+  .cancelled-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    font-style: italic;
+    color: #aaa;
+    margin-top: 2px;
+  }
+
+  .expect-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid #d0d0d0;
+    margin-bottom: 52px;
+  }
+
+  .expect-item {
+    padding: 16px 20px;
+    border-right: 1px solid #d0d0d0;
+    border-bottom: 1px solid #d0d0d0;
+  }
+
+  .expect-item:nth-child(2n) { border-right: none; }
+  .expect-item:nth-last-child(-n+2) { border-bottom: none; }
+
+  .expect-label {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .expect-value {
+    font-size: 13px;
+    color: #444;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  .footer {
+    border-top: 1px solid #d0d0d0;
+    padding-top: 20px;
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px;
+    color: #888;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="org">OwnerRx</div>
+  <h1>Summer Internship Cohort &mdash; 2026</h1>
+  <div class="subtitle">AI-Native Operator Program &nbsp;&middot;&nbsp; June 15 &ndash; July 10</div>
+</div>
+
+<div class="meta">
+  <div class="meta-item">
+    <div class="meta-label">Duration</div>
+    <div class="meta-value">11 Sessions</div>
+  </div>
+  <div class="meta-item">
+    <div class="meta-label">Format</div>
+    <div class="meta-value">Live &mdash; Mon / Wed / Fri</div>
+  </div>
+  <div class="meta-item">
+    <div class="meta-label">Dates</div>
+    <div class="meta-value">Jun 15 &ndash; Jul 10, 2026</div>
+  </div>
+</div>
+
+<div class="schedule">
+  <h2>Session Schedule</h2>
+
+  <div class="session-row">
+    <div class="session-date">Mon, Jun 15</div>
+    <div>
+      <div class="session-num">Session 1</div>
+      <div class="session-title">Claude Code Foundations</div>
+      <div class="session-desc">The agent loop, prompt engineering, reading tracebacks, first commits.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Define the Problem</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Wed, Jun 17<br><span style="font-size:11px;color:#2563eb;">10:00 AM EDT</span></div>
+    <div>
+      <div class="session-num">Session 2</div>
+      <div class="session-title">Design Your Approach &mdash; Guest: Adrian Rich</div>
+      <div class="session-desc">Operator Move 2, business problem frameworks, and a live guest session with Adrian Rich.</div>
+      <div class="tags">
+        <span class="tag tag-guest">Guest: Adrian Rich</span>
+        <span class="tag tag-operator">Operator: Design the Approach</span>
+      </div>
+      <div class="zoom-block">
+        <div class="zoom-label">Zoom &mdash; Session 2 &amp; Adrian Rich</div>
+        <a href="https://zoom.us/j/91083623496?pwd=WTMUCaZ1DjOzLDJziD1VE3OnG9vmuY.1" target="_blank">https://zoom.us/j/91083623496?pwd=WTMUCaZ1DjOzLDJziD1VE3OnG9vmuY.1</a>
+        <div class="zoom-pw">Password: 107956</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="session-row guest-row">
+    <div class="session-date">Wed, Jun 17<br><span style="font-size:11px;color:#2563eb;">3:00 PM EDT</span></div>
+    <div>
+      <div class="session-num">Guest Session</div>
+      <div class="session-title">Beth Maloney</div>
+      <div class="session-desc">Guest speaker session &mdash; Lumina Corps.</div>
+      <div class="tags"><span class="tag tag-guest">Guest: Beth Maloney</span></div>
+      <div class="zoom-block">
+        <div class="zoom-label">Zoom &mdash; Beth Maloney</div>
+        <a href="https://zoom.us/j/97671409339?pwd=2HAdBCZP71YYoJb509PBCQvrYqfyHQ.1" target="_blank">https://zoom.us/j/97671409339?pwd=2HAdBCZP71YYoJb509PBCQvrYqfyHQ.1</a>
+        <div class="zoom-pw">Password: 300496</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="session-row guest-row">
+    <div class="session-date">Thu, Jun 18<br><span style="font-size:11px;color:#2563eb;">12:00 PM EDT</span></div>
+    <div>
+      <div class="session-num">Guest Session</div>
+      <div class="session-title">Laura McManus</div>
+      <div class="session-desc">Guest speaker session &mdash; Mackenzie Ltd.</div>
+      <div class="tags"><span class="tag tag-guest">Guest: Laura McManus</span></div>
+      <div class="zoom-block">
+        <div class="zoom-label">Zoom &mdash; Laura McManus</div>
+        <a href="https://zoom.us/j/93126382324?pwd=2bKTBsbagjaytdBpDkgjrWMYGh2H9v.1" target="_blank">https://zoom.us/j/93126382324?pwd=2bKTBsbagjaytdBpDkgjrWMYGh2H9v.1</a>
+        <div class="zoom-pw">Password: 194931</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Fri, Jun 19</div>
+    <div>
+      <div class="session-num">Session 3</div>
+      <div class="session-title">CLAUDE.md &middot; Plan Mode &middot; Skills</div>
+      <div class="session-desc">Persistent context, deliberate execution modes, encoding reusable workflows.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Communicate Findings</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Mon, Jun 22</div>
+    <div>
+      <div class="session-num">Session 4</div>
+      <div class="session-title">Agent Architectures</div>
+      <div class="session-desc">Subagents, orchestration pipelines, the agent loop at scale.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Design the Approach</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Wed, Jun 24</div>
+    <div>
+      <div class="session-num">Session 5</div>
+      <div class="session-title">Capstone Architecture Lock</div>
+      <div class="session-desc">Finalize capstone design, define scope, write CLAUDE.md for the build sprint.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Define the Problem</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Fri, Jun 26</div>
+    <div>
+      <div class="session-num">Session 6</div>
+      <div class="session-title">MCP Integration</div>
+      <div class="session-desc">Model Context Protocol &mdash; consuming external tools, connecting Claude to live data.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Design the Approach</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Mon, Jun 29</div>
+    <div>
+      <div class="session-num">Session 7</div>
+      <div class="session-title">Build Sprint 1</div>
+      <div class="session-desc">Active capstone development. First working version, commit history begins.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Show Results</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Wed, Jul 1</div>
+    <div>
+      <div class="session-num">Session 8</div>
+      <div class="session-title">Build Sprint 2</div>
+      <div class="session-desc">Iterate on capstone. Edge cases, error handling, data validation.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Show Results</span></div>
+    </div>
+  </div>
+
+  <div class="session-row cancelled">
+    <div class="session-date">Fri, Jul 3</div>
+    <div>
+      <div class="cancelled-label">No session &mdash; 4th of July weekend</div>
+      <div class="tags"><span class="tag tag-cancelled">Cancelled</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Mon, Jul 6</div>
+    <div>
+      <div class="session-num">Session 9</div>
+      <div class="session-title">Build Sprint 3</div>
+      <div class="session-desc">Final development push. Feature complete by end of session.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Track &amp; Organize</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Wed, Jul 8</div>
+    <div>
+      <div class="session-num">Session 10</div>
+      <div class="session-title">Demo Preparation</div>
+      <div class="session-desc">Polish the capstone, write sponsor update, prepare the live walkthrough.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Communicate Findings</span></div>
+    </div>
+  </div>
+
+  <div class="session-row">
+    <div class="session-date">Fri, Jul 10</div>
+    <div>
+      <div class="session-num">Session 11</div>
+      <div class="session-title">Final Presentations</div>
+      <div class="session-desc">Live capstone demos. Each intern presents their agent to sponsor and cohort.</div>
+      <div class="tags"><span class="tag tag-operator">Operator: Show Results</span></div>
+    </div>
+  </div>
+
+</div>
+
+<h2>What to Expect</h2>
+<div class="expect-grid">
+  <div class="expect-item">
+    <div class="expect-label">Time per session</div>
+    <div class="expect-value">60 &ndash; 90 minutes, live</div>
+  </div>
+  <div class="expect-item">
+    <div class="expect-label">Tools</div>
+    <div class="expect-value">Claude Code, terminal, GitHub</div>
+  </div>
+  <div class="expect-item">
+    <div class="expect-label">Deliverable</div>
+    <div class="expect-value">Working AI agent, committed to GitHub</div>
+  </div>
+  <div class="expect-item">
+    <div class="expect-label">Operator track</div>
+    <div class="expect-value">5 consulting moves woven through every session</div>
+  </div>
+  <div class="expect-item">
+    <div class="expect-label">Guest speakers</div>
+    <div class="expect-value">Adrian Rich (Jun 17, 10am) &middot; Beth Maloney (Jun 17, 3pm) &middot; Laura McManus (Jun 18, 12pm)</div>
+  </div>
+  <div class="expect-item">
+    <div class="expect-label">Capstone sponsor</div>
+    <div class="expect-value">Assigned at Session 1</div>
+  </div>
+</div>
+
+<div class="footer">
+  OwnerRx &nbsp;&middot;&nbsp; Summer 2026 &nbsp;&middot;&nbsp; Questions: intern1@ownerrx.com
+</div>
+
+</body>
+</html>
