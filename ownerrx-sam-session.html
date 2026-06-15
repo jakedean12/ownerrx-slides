@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sam — Sessions 3 & 4 · Planana Study Agent</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+
+  .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 3px solid #7c3aed; }
+  .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+  .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+  .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .code-block { position: relative; margin: 14px 0; }
+  pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+  pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 28px; height: 28px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+
+  .session-banner { background: #0f0f1a; border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .session-banner .s-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; }
+  .session-banner .s-title { font-size: 15px; font-weight: 700; color: #f1f5f9; }
+
+  .done-badge { display: inline-block; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+  .todo-badge { display: inline-block; background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+
+  .diagram-box { background: #0f172a; border-radius: 8px; padding: 20px 24px; margin: 14px 0; font-family: "JetBrains Mono", Menlo, monospace; font-size: 13px; color: #e2e8f0; line-height: 2; overflow-x: auto; }
+
+  .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "□ "; font-size: 16px; margin-right: 4px; }
+
+  .next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+  .next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">KP Academy · Sam Pentz · June 15, 2026</div>
+  <h1>Sessions 3 &amp; 4 — Planana Study Agent</h1>
+  <p>Slash commands &nbsp;·&nbsp; Loop mechanics &nbsp;·&nbsp; 3-agent pipeline &nbsp;·&nbsp; Antagonist evaluator</p>
+</div>
+
+<div class="toc">
+  <a href="#where-we-are">Where We Are</a>
+  <a href="#slash">S3 · Slash Command</a>
+  <a href="#primitives">S4 · Primitives</a>
+  <a href="#loop">S4 · Loop Mechanics</a>
+  <a href="#pipeline">S4 · Build the Pipeline</a>
+  <a href="#wrap">✓ Wrap-up</a>
+</div>
+
+<div class="content">
+
+  <!-- WHERE WE ARE -->
+  <div class="section" id="where-we-are">
+    <div class="section-header">
+      <div class="part-label">Starting Point</div>
+      <h2>Where we left off</h2>
+      <div class="subtitle">What's already built, what's left to finish tonight.</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>Artifact</th><th>Status</th></tr>
+        <tr><td>Onboarding — <code>about.md</code></td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td>Capstone — Planana Study Agent</td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td>Session 1 + 2 homework</td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td><code>CLAUDE.md</code> — Planana briefing + guardrails</td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td>First Skill — <code>study-triage.md</code></td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td>Slash command — <code>operator-status.md</code></td><td><span class="todo-badge">Tonight — Session 3</span></td></tr>
+        <tr><td>3-agent pipeline (research → draft → antagonist)</td><td><span class="todo-badge">Tonight — Session 4</span></td></tr>
+        <tr><td>Eval set (10+ test cases)</td><td><span class="todo-badge">Homework</span></td></tr>
+      </table>
+
+      <div class="callout blue"><strong>Planana context:</strong> Sam is building an AI agent inside his own app — a study planner for students. The agent reads a student's assignments, calendar, grades, and past study logs, then outputs a ranked study plan with method recommendations and suggested time blocks. It lives inside Greg, the AI chat interface in Planana.</div>
+    </div>
+  </div>
+
+  <!-- SESSION 3 FINISH: SLASH COMMAND -->
+  <div class="section" id="slash">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Session 3 — Finish</div>
+        <div class="s-title">Slash Command · ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">One thing left</div>
+      <h2>Build <code>/operator-status</code></h2>
+      <div class="subtitle">A slash command Sam triggers manually to generate a status update on the Planana capstone.</div>
+    </div>
+    <div class="section-body">
+      <p>A slash command is identical to a skill file — same folder, same format. The only difference: a skill fires automatically when Claude detects the right trigger. A slash command fires when Sam manually types <code>/name</code>.</p>
+
+      <div class="callout"><strong>Analogy:</strong> A skill is a smoke detector — fires on its own when it detects something. A slash command is a light switch — you flip it when you want it.</div>
+
+      <h3>Step 1 — Open Claude Code in kp-academy</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>cd ~/kp-academy
+claude</code></pre>
+      </div>
+
+      <h3>Step 2 — Build the slash command</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Write a slash command called operator-status and save it to participants/sammpentz-commits/.claude/skills/operator-status.md. It should read my operator-log.md and capstone.md, then generate a one-paragraph status update on where the Planana capstone stands — what's been defined, what approach I'm taking, and what my next open question is.</code></pre>
+      </div>
+
+      <h3>Step 3 — Test it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>/operator-status</code></pre>
+      </div>
+      <p>It should generate a paragraph summarizing the Planana capstone from the files Claude reads. If the output is too generic, it means the operator-log.md needs more detail — update it with one more entry and try again.</p>
+
+      <h3>Step 4 — Commit</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/sammpentz-commits/
+git commit -m "Session 3 complete: add operator-status slash command"
+git push</code></pre>
+      </div>
+
+      <div class="callout green"><strong>Session 3 done.</strong> Sam now has CLAUDE.md, a skill, and a slash command. Move straight into Session 4.</div>
+    </div>
+  </div>
+
+  <!-- SESSION 4: PRIMITIVES -->
+  <div class="section" id="primitives">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Session 4</div>
+        <div class="s-title">The Four Primitives · ~10 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Concepts only — no building yet</div>
+      <h2>Name the pieces before we build</h2>
+      <div class="subtitle">Every modern AI platform is built from these four things.</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>Primitive</th><th>What it is</th><th>Planana example</th></tr>
+        <tr><td><strong>Skill</strong></td><td>A saved instruction file Claude reads automatically when triggered</td><td><code>study-triage.md</code> — already built</td></tr>
+        <tr><td><strong>Plugin</strong></td><td>A bundle of skills packaged together for a team</td><td>Everything Sam builds, packaged for other Planana users</td></tr>
+        <tr><td><strong>Subagent</strong></td><td>A fresh Claude instance hired for one specific job</td><td>A research agent that only reads assignment data — tonight's build</td></tr>
+        <tr><td><strong>Connector</strong></td><td>A pipe to external tools — Gmail, GitHub, databases</td><td>Planana's calendar and assignment database — Session 6</td></tr>
+      </table>
+
+      <div class="callout blue"><strong>Analogy for subagents:</strong> A law firm. One lawyer researches the case, one writes the brief, one reviews it for holes. Same firm, different roles, better output than one lawyer doing all three. Tonight Sam is building that firm for Planana.</div>
+    </div>
+  </div>
+
+  <!-- SESSION 4: LOOP MECHANICS -->
+  <div class="section" id="loop">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Session 4</div>
+        <div class="s-title">Loop Mechanics · ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Concept — no building</div>
+      <h2>How Claude Code actually works under the hood</h2>
+      <div class="subtitle">Understanding the loop explains why pipelines work and why agents sometimes go off the rails.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>The loop</h3>
+      <div class="diagram-box">User prompt → Claude decides → Tool call → Tool result → Claude decides → ...
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(no more tool calls = done)</div>
+
+      <p>The loop ends when Claude produces a response <strong>without calling any tools</strong>. That's the signal it thinks it's done. Everything in between — reading files, writing code, running commands — is just Claude going around this loop until it decides the job is finished.</p>
+
+      <div class="divider"></div>
+
+      <h3>Why this matters for Planana</h3>
+      <p>Sam's pipeline is going to: read assignment data → generate a study plan → evaluate it. That's three tool calls in a loop. Without a clear stopping point, Claude might keep "improving" the plan forever.</p>
+
+      <div class="callout warn"><strong>Bad prompt — infinite loop:</strong> "Keep improving the study plan until it's as good as possible." Claude has no idea what "as good as possible" means. It will loop indefinitely.</div>
+
+      <div class="callout green"><strong>Good prompt — clear exit:</strong> "Generate one study plan, evaluate it once for conflicts and hallucinated data, return the final version, then stop." Claude knows exactly when it's done.</div>
+
+      <p><strong>The rule:</strong> always define what "done" looks like. If you can't describe the finished output, Claude can't decide when to stop either.</p>
+
+      <div class="divider"></div>
+
+      <h3>Pipeline vs Hub-and-Spoke</h3>
+
+      <table>
+        <tr><th>Shape</th><th>Pattern</th><th>When to use it</th></tr>
+        <tr><td><strong>Pipeline</strong></td><td>A → B → C, each step feeds the next</td><td>Each step depends on the previous one. Can't draft before researching. Can't evaluate before drafting.</td></tr>
+        <tr><td><strong>Hub-and-Spoke</strong></td><td>One orchestrator sends to N specialists at once, collects results</td><td>Sub-tasks are independent — can run in parallel. One agent reading math assignments while another reads history assignments.</td></tr>
+      </table>
+
+      <div class="callout blue"><strong>For Planana tonight — Pipeline wins.</strong> Sam can't generate a study plan before reading assignments. He can't evaluate the plan before it exists. The data flows one direction: gather → generate → evaluate. Sequential all the way through.</div>
+
+      <div class="divider"></div>
+
+      <h3>Session Resumption</h3>
+      <p>If Sam is mid-session and has to stop, he can pick up exactly where he left off:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>claude --resume &lt;conversation-id&gt;</code></pre>
+      </div>
+      <p>Claude reloads everything — every file it read, every tool it called. Use it for genuinely paused work. For a new task, always start fresh with <code>/clear</code> — old context bleeds in and confuses Claude.</p>
+    </div>
+  </div>
+
+  <!-- SESSION 4: BUILD THE PIPELINE -->
+  <div class="section" id="pipeline">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Session 4 — Main Build</div>
+        <div class="s-title">3-Agent Pipeline · ~35 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Build time</div>
+      <h2>Research → Draft → Antagonist</h2>
+      <div class="subtitle">Three specialized agents handing off to each other, with an adversarial agent that catches what the generator missed.</div>
+    </div>
+    <div class="section-body">
+
+      <h3>The concept</h3>
+      <p>A single agent has blind spots — it generates output and evaluates its own output with the same biases. A pipeline fixes this: each agent has one job and no investment in the other agents' work.</p>
+
+      <div class="diagram-box">Research Agent → Draft Agent → Antagonist Evaluator
+reads assignments    generates study plan    finds real problems
+grades, study logs   method recommendations  flags hallucinated data
+calendar data        suggested time blocks   flags calendar conflicts</div>
+
+      <p>The antagonist works because it's given a completely different instruction — not "generate a good plan" but "find everything wrong with this plan." It has no reason to be generous.</p>
+
+      <div class="callout"><strong>Analogy Sam will get immediately:</strong> Submitting a draft assignment vs having a friend tear it apart first. The friend who finds your mistakes before your teacher does is the antagonist agent.</div>
+
+      <div class="divider"></div>
+
+      <h3>Step 1 — Build the pipeline</h3>
+      <p>Paste this into Claude Code:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>I want to build a 3-agent pipeline for my Planana capstone. The agent analyzes a student's assignments and calendar to generate a personalized study plan.
+
+Create three agent files in participants/sammpentz-commits/artifacts/pipeline/:
+1. research.md — gathers the student's assignments, grades, and past study logs
+2. draft.md — generates a ranked study plan with method recommendations and suggested time blocks
+3. antagonist.md — checks that every recommendation references real student data, no hallucinated assignments or grades, and all suggested blocks fit in actual free calendar time
+
+Then write a skill in participants/sammpentz-commits/.claude/skills/run-pipeline.md that orchestrates all three in sequence: research → draft → antagonist → final output.</code></pre>
+      </div>
+
+      <div class="callout warn"><strong>Don't interrupt while Claude builds.</strong> Let it finish all four files before touching anything. It may take 2–3 minutes.</div>
+
+      <div class="divider"></div>
+
+      <h3>Step 2 — Read the agent files</h3>
+      <p>Before running anything, read all three files Claude created. For each one ask: <em>"Is this agent focused on exactly one job, or is it trying to do too much?"</em></p>
+      <p>A research agent that also tries to draft is wrong. Split it. A draft agent that also evaluates is wrong. Split it. Each file should be doing exactly one thing.</p>
+
+      <div class="divider"></div>
+
+      <h3>Step 3 — Run it on Planana sample data</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Run the pipeline using this sample student data:
+
+Assignments:
+- Math test on Friday (subject: math, grade so far: B-)
+- History essay due Thursday (subject: history, grade so far: A-)
+- Science homework due tomorrow (subject: science, grade so far: B+)
+
+Past study logs:
+- Math: flashcards, 2 hours, got B on last test
+- History: reading notes, 1.5 hours, got A- on last essay
+
+Calendar free time:
+- Tonight: 7pm - 9pm
+- Tomorrow: 4pm - 6pm
+- Wednesday: 5pm - 8pm</code></pre>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Step 4 — Compare single agent vs pipeline</h3>
+      <p>Run the same request without the pipeline — just a direct prompt:</p>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Given these assignments and calendar, generate a personalized study plan with method recommendations and suggested time blocks: [paste the same student data]</code></pre>
+      </div>
+      <p>Compare the two outputs. What did the antagonist catch that the single-agent version missed?</p>
+
+      <div class="divider"></div>
+
+      <h3>Step 5 — Check the antagonist</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Did the antagonist agent actually find a real problem in the draft, or did it just rephrase what the draft said? What's the evidence?</code></pre>
+      </div>
+
+      <div class="callout warn"><strong>If the antagonist was too nice</strong> — it just agreed with the draft — add this to its system prompt: "Be adversarial. Find every flaw. If a recommendation references data that isn't in the student's profile, flag it explicitly. If a study block conflicts with a calendar event, flag it. If the plan looks good, you're not looking hard enough." Then run the pipeline again.</div>
+
+      <div class="divider"></div>
+
+      <h3>Step 6 — Commit everything</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/sammpentz-commits/
+git commit -m "Session 4: 3-agent pipeline for Planana study planner"
+git push</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRAP UP -->
+  <div class="section" id="wrap">
+    <div class="section-header">
+      <div class="part-label">Wrap-up</div>
+      <h2>Before you close out tonight</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Tonight's Checklist</h3>
+        <ul>
+          <li><code>participants/sammpentz-commits/.claude/skills/operator-status.md</code> — slash command tested and committed</li>
+          <li><code>participants/sammpentz-commits/artifacts/pipeline/research.md</code> — research agent committed</li>
+          <li><code>participants/sammpentz-commits/artifacts/pipeline/draft.md</code> — draft agent committed</li>
+          <li><code>participants/sammpentz-commits/artifacts/pipeline/antagonist.md</code> — antagonist committed and adversarial</li>
+          <li><code>participants/sammpentz-commits/.claude/skills/run-pipeline.md</code> — orchestrating skill committed</li>
+          <li>Pipeline run on sample data — output saved</li>
+          <li>Single agent vs pipeline comparison done</li>
+        </ul>
+      </div>
+
+      <div class="next-up">
+        <div class="label">Next — Session 5</div>
+        <p><strong>Hooks + Guardrails</strong> &nbsp;·&nbsp; The pipeline runs. Now we make it safe. You'll add a PreToolUse hook that blocks hallucinated data from going into the plan, and a PostToolUse hook that logs every pipeline run to an audit file.</p>
+        <p style="margin-top: 10px;"><strong>Homework before next session:</strong> Build an eval set — 10 realistic test cases for the Planana agent. At least 2 must be adversarial — inputs designed to make the agent fail. Save them to <code>participants/sammpentz-commits/artifacts/evals/</code>.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
