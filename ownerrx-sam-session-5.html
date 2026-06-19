@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sam — Session 5 · Planana Study Agent</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; }
+
+  .header { background: #0f0f1a; color: white; padding: 40px 48px; border-bottom: 3px solid #7c3aed; }
+  .header .kicker { font-size: 12px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 10px; }
+  .header h1 { font-size: 32px; font-weight: 700; color: #f1f5f9; margin-bottom: 6px; }
+  .header p { font-size: 15px; color: #64748b; }
+
+  .toc { background: white; border-bottom: 1px solid #e2e8f0; padding: 16px 48px; display: flex; gap: 8px; flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
+  .toc a { font-size: 13px; font-weight: 600; color: #64748b; text-decoration: none; padding: 5px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all 0.15s; white-space: nowrap; }
+  .toc a:hover { background: #f1f5f9; color: #1e293b; }
+
+  .content { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .section { background: white; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 32px; overflow: hidden; }
+  .section-header { padding: 24px 32px 20px; border-bottom: 1px solid #f1f5f9; }
+  .section-header .part-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; margin-bottom: 6px; }
+  .section-header h2 { font-size: 22px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+  .section-header .subtitle { font-size: 13px; color: #94a3b8; }
+  .section-body { padding: 28px 32px; }
+
+  h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin: 24px 0 10px; }
+  h3:first-child { margin-top: 0; }
+  p { font-size: 15px; color: #334155; margin-bottom: 12px; line-height: 1.7; }
+  p:last-child { margin-bottom: 0; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { font-size: 15px; color: #334155; margin-bottom: 6px; line-height: 1.6; }
+  li strong { color: #0f172a; }
+
+  code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 12.5px; background: #f1f5f9; color: #7c3aed; padding: 1px 5px; border-radius: 3px; }
+  .code-block { position: relative; margin: 14px 0; }
+  pre { background: #0f172a; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 0; }
+  pre code { font-family: "JetBrains Mono", Menlo, monospace; font-size: 13.5px; line-height: 1.8; color: #e2e8f0; white-space: pre; background: transparent; padding: 0; border-radius: 0; }
+  .copy-btn { position: absolute; top: 10px; right: 10px; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 5px; padding: 4px 10px; font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .copy-btn:hover { background: #334155; color: #e2e8f0; }
+  .copy-btn.copied { background: #052e16; color: #6ee7b7; border-color: #10b981; }
+
+  .callout { border-left: 3px solid #7c3aed; background: #faf5ff; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 14px 0; font-size: 14px; color: #4c1d95; line-height: 1.6; }
+  .callout.warn { border-color: #f59e0b; background: #fffbeb; color: #78350f; }
+  .callout.green { border-color: #10b981; background: #f0fdf4; color: #064e3b; }
+  .callout.blue { border-color: #3b82f6; background: #eff6ff; color: #1e3a5f; }
+
+  .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
+  .step { display: flex; gap: 14px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 28px; height: 28px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-top: 1px; }
+  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body strong { color: #0f172a; }
+
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th { text-align: left; padding: 9px 14px; background: #f8fafc; color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; border-bottom: 2px solid #e2e8f0; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f1f5f9; color: #334155; vertical-align: top; line-height: 1.5; }
+  td strong { color: #0f172a; }
+
+  .session-banner { background: #0f0f1a; border-radius: 8px; padding: 14px 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 12px; }
+  .session-banner .s-label { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #7c3aed; }
+  .session-banner .s-title { font-size: 15px; font-weight: 700; color: #f1f5f9; }
+
+  .done-badge { display: inline-block; background: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+  .todo-badge { display: inline-block; background: #faf5ff; color: #7c3aed; border: 1px solid #e9d5ff; font-size: 11px; font-weight: 700; padding: 2px 10px; border-radius: 20px; margin-left: 8px; vertical-align: middle; }
+
+  .diagram-box { background: #0f172a; border-radius: 8px; padding: 20px 24px; margin: 14px 0; font-family: "JetBrains Mono", Menlo, monospace; font-size: 13px; color: #e2e8f0; line-height: 2; overflow-x: auto; }
+
+  .artifact-checklist { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 20px 24px; margin-top: 8px; }
+  .artifact-checklist h3 { color: #064e3b; margin-top: 0; }
+  .artifact-checklist li { list-style: none; padding-left: 0; color: #065f46; }
+  .artifact-checklist li::before { content: "\25A1 "; font-size: 16px; margin-right: 4px; }
+
+  .next-up { background: #0f0f1a; color: #fff; padding: 28px 32px; border-radius: 12px; margin-top: 8px; }
+  .next-up .label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #7c3aed; margin-bottom: 8px; }
+  .next-up p { color: #94a3b8; font-size: 15px; margin: 0; }
+  .next-up strong { color: #f1f5f9; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="kicker">KP Academy &middot; Sam Pentz &middot; Session 5</div>
+  <h1>Session 5 — Hooks &amp; Guardrails</h1>
+  <p>PreToolUse &nbsp;&middot;&nbsp; PostToolUse &nbsp;&middot;&nbsp; Structured errors &nbsp;&middot;&nbsp; Validation-retry, for real</p>
+</div>
+
+<div class="toc">
+  <a href="#where-we-are">Where We Are</a>
+  <a href="#evals">Step 0 &middot; Eval Set</a>
+  <a href="#pretooluse">Ex 1 &middot; PreToolUse</a>
+  <a href="#posttooluse">Ex 2 &middot; PostToolUse</a>
+  <a href="#errors">Ex 3 &middot; Structured Errors</a>
+  <a href="#retry">Ex 4 &middot; Validation-Retry</a>
+  <a href="#wrap">&#10003; Wrap-up</a>
+</div>
+
+<div class="content">
+
+  <!-- WHERE WE ARE -->
+  <div class="section" id="where-we-are">
+    <div class="section-header">
+      <div class="part-label">Starting Point</div>
+      <h2>Where we left off</h2>
+      <div class="subtitle">Your 3-agent pipeline runs. Today it gets a harness around it that doesn't trust good intentions.</div>
+    </div>
+    <div class="section-body">
+      <table>
+        <tr><th>Artifact</th><th>Status</th></tr>
+        <tr><td>3-agent pipeline (research &rarr; draft &rarr; antagonist)</td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td><code>run-pipeline.md</code> &mdash; orchestrator with revise-on-fail logic</td><td><span class="done-badge">Done</span></td></tr>
+        <tr><td>Eval set (10+ realistic test cases)</td><td><span class="todo-badge">Tonight &mdash; Step 0</span></td></tr>
+        <tr><td>PreToolUse hook (blocks an unsafe action)</td><td><span class="todo-badge">Tonight</span></td></tr>
+        <tr><td>PostToolUse hook (audit log)</td><td><span class="todo-badge">Tonight</span></td></tr>
+        <tr><td>Structured error categories on one agent</td><td><span class="todo-badge">Tonight</span></td></tr>
+        <tr><td>Validation-retry loop, hard-coded</td><td><span class="todo-badge">Tonight</span></td></tr>
+      </table>
+
+      <div class="callout blue"><strong>The hook for tonight:</strong> Open <code>run-pipeline.md</code> and look at Step 4 &mdash; "If FAIL, feed back to draft, max 2 revision rounds." That's a sentence in a markdown file. Nothing stops a future version of Claude from deciding "close enough" and skipping it, or looping 5 times instead of 2. Tonight we turn that sentence into a rule the harness enforces &mdash; Claude doesn't get a vote.</div>
+    </div>
+  </div>
+
+  <!-- STEP 0: EVAL SET -->
+  <div class="section" id="evals">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Step 0 &mdash; Prerequisite</div>
+        <div class="s-title">Build a Quick Eval Set &middot; ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Catch-up from last time</div>
+      <h2>You need a regression baseline before you harden anything</h2>
+      <div class="subtitle">Every hook you add tonight risks breaking the happy path. An eval set is how you prove it didn't.</div>
+    </div>
+    <div class="section-body">
+      <p>Create <code>participants/sammpentz-commits/artifacts/evals/cases.md</code> with 5 realistic test cases. Each one is input data plus what the pipeline should do with it.</p>
+
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Clean baseline</strong> &mdash; a normal student with assignments, grades, and study history. Should pass straight through.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>No study history</strong> &mdash; a subject with zero past study logs. The draft agent should recommend a general-purpose method and say so &mdash; not invent a method that "worked before."</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>No free time</strong> &mdash; a packed calendar with no open windows. The plan should say so, not invent free time.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Overdue assignment</strong> &mdash; something already past its due date. Should rank at or near the top.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-body"><strong>Adversarial</strong> &mdash; deliberately missing a grade field. The pipeline should say "not provided," never guess a grade.</div></div>
+      </div>
+
+      <div class="callout warn"><strong>5 is the minimum for tonight, not the finish line.</strong> Grow this to 10&ndash;20 before Session 6 &mdash; that's the official course bar, and it's the regression set you'll run against every future change.</div>
+    </div>
+  </div>
+
+  <!-- EXERCISE 1: PRETOOLUSE -->
+  <div class="section" id="pretooluse">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Exercise 1</div>
+        <div class="s-title">PreToolUse Hook &middot; ~20 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">The wall Claude can't argue past</div>
+      <h2>Block a study block that overlaps a real event</h2>
+      <div class="subtitle">A prompt is advice Claude can override. A hook is a wall it can't see past.</div>
+    </div>
+    <div class="section-body">
+
+      <p>Your <code>CLAUDE.md</code> already says: never auto-move or delete a calendar event, and the draft agent should only use free time. Right now that's enforced by Claude reading the rule and agreeing with it. Tonight it becomes a hook.</p>
+
+      <div class="callout"><strong>The rule, in one sentence:</strong> A proposed study block must not overlap a "busy" slot from the research agent's calendar data, and must not fall between 11pm&ndash;7am.</div>
+
+      <h3>Step 1 &mdash; Ask Claude to write the hook</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>I want a PreToolUse hook that protects my Planana study planner pipeline. Before any study block gets written into the final plan, check it against the research agent's free-time windows.
+
+Write a bash + jq script saved to participants/sammpentz-commits/.claude/hooks/check-study-block.sh that:
+1. Reads the tool call payload from stdin
+2. Pulls the proposed study block's start/end time
+3. Blocks (exit 2) if the block overlaps any "busy" window from the research data, or falls between 11pm and 7am
+4. On block, writes a specific stderr message naming the exact conflict &mdash; not just "blocked"
+5. Exits 0 if the block is clean
+
+Then wire it into .claude/settings.json with the right matcher.</code></pre>
+      </div>
+
+      <h3>Step 2 &mdash; Read the script before testing it</h3>
+      <p>Walk through it line by line. Find: where does it read the payload? Where does it decide busy vs free? What's the exact stderr message on a block?</p>
+
+      <h3>Step 3 &mdash; Test both directions</h3>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Feed it a study block that deliberately overlaps an existing event &mdash; confirm it's blocked with a useful message.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Feed it a block in a genuinely free window &mdash; confirm it passes.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Feed it a block at 1am &mdash; confirm it's blocked for the sleep-hours rule, not just the overlap rule.</div></div>
+      </div>
+
+      <div class="callout warn"><strong>If it blocks everything, the matcher's too broad.</strong> Narrow it to the specific tool call that writes the final study block &mdash; not every tool call in the pipeline.</div>
+
+      <h3>Step 4 &mdash; Commit</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/sammpentz-commits/
+git commit -m "Session 5: PreToolUse hook blocks overlapping/sleep-hour study blocks"
+git push</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE 2: POSTTOOLUSE -->
+  <div class="section" id="posttooluse">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Exercise 2</div>
+        <div class="s-title">PostToolUse Hook &middot; ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Observe, never block</div>
+      <h2>Log every study plan delivered</h2>
+      <div class="subtitle">PreToolUse is a wall. PostToolUse is a witness &mdash; it records what happened after the fact.</div>
+    </div>
+    <div class="section-body">
+
+      <p>Lower stakes than a hospital or fintech example, but the habit matters: once real students use this, you'll want a record of what was recommended and whether the antagonist had to step in.</p>
+
+      <h3>Build it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Write a PostToolUse hook saved to participants/sammpentz-commits/.claude/hooks/log-study-plan.sh that fires after the pipeline produces a final study plan. It should append one JSON line to participants/sammpentz-commits/audit/audit.jsonl with: timestamp, which assignments were ranked, which study methods were recommended, and whether the antagonist passed or failed (and how many revision rounds it took).
+
+Make sure it always exits 0 &mdash; this hook observes, it never blocks. Add audit/ to .gitignore so the log contents never get committed, only the hook script and settings.json config.</code></pre>
+      </div>
+
+      <h3>Test it</h3>
+      <p>Run the pipeline once on real sample data. Open <code>audit.jsonl</code> and confirm one line appeared with every field populated.</p>
+
+      <div class="callout green"><strong>Why this matters later:</strong> once Planana has real students, this log is how you answer "how good are our recommendations, actually?" without needing to ask anyone.</div>
+    </div>
+  </div>
+
+  <!-- EXERCISE 3: STRUCTURED ERRORS -->
+  <div class="section" id="errors">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Exercise 3</div>
+        <div class="s-title">Structured Error Categories &middot; ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">Give Claude something to act on</div>
+      <h2>Turn "say so, don't guess" into a real category</h2>
+      <div class="subtitle">A tool that returns "something went wrong" makes Claude guess. A category + a hint makes it recover correctly.</div>
+    </div>
+    <div class="section-body">
+
+      <p>Your research agent already has a rule: if a field is missing, write "not provided," never guess. Today that becomes two real categories instead of one prose sentence.</p>
+
+      <table>
+        <tr><th>Category</th><th>Example for your pipeline</th><th>What the agent should do</th></tr>
+        <tr><td><strong>Schema</strong></td><td>A calendar event is missing an end time</td><td>Flag it, don't process that event as a free/busy block</td></tr>
+        <tr><td><strong>Permanent</strong></td><td>An assignment's due date can't be parsed</td><td>Don't retry &mdash; surface it, ask for the real date</td></tr>
+      </table>
+
+      <div class="callout blue"><strong>Skipping retryable and authorization for now</strong> &mdash; your pipeline doesn't call any live external API yet, so there's nothing transient to retry against. That changes once Session 6 wires in real Google Calendar / Planana database sync.</div>
+
+      <h3>Build it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Update the research agent (participants/sammpentz-commits/artifacts/pipeline/research.md) so that when it encounters bad input data, it returns a structured error instead of a plain sentence:
+
+{"category": "schema", "message": "Calendar event 'Math class' is missing an end time", "hint": "Cannot determine if this slot is free or busy &mdash; ask the student to confirm the event's end time."}
+
+{"category": "permanent", "message": "Assignment 'Lab Report' has an unparseable due date: 'next wknd'", "hint": "Ask the student to provide the due date in a standard format."}
+
+Use "schema" for malformed/missing calendar or assignment fields, and "permanent" for anything that's invalid and won't fix itself on retry.</code></pre>
+      </div>
+
+      <h3>Test it</h3>
+      <p>Force each category: feed it a calendar event missing an end time, then an assignment with an unparseable date. Confirm the category and hint are both useful &mdash; not just "error."</p>
+    </div>
+  </div>
+
+  <!-- EXERCISE 4: VALIDATION-RETRY -->
+  <div class="section" id="retry">
+    <div class="session-banner">
+      <div>
+        <div class="s-label">Exercise 4 &mdash; The Big One</div>
+        <div class="s-title">Validation-Retry Loop &middot; ~15 min</div>
+      </div>
+    </div>
+    <div class="section-header" style="border-top: 1px solid #f1f5f9;">
+      <div class="part-label">From prompt to enforced rule</div>
+      <h2>Hard-code the "max 2 revision rounds" rule</h2>
+      <div class="subtitle">This is the payoff. The thing you've already designed becomes the thing the harness guarantees.</div>
+    </div>
+    <div class="section-body">
+
+      <div class="diagram-box">draft agent &rarr; antagonist check &rarr; PASS? &rarr; deliver
+                          &darr; FAIL
+                  feed specific failures back to draft
+                          &darr;
+                  re-run antagonist (round 2 of 2 max)
+                          &darr;
+              still FAIL &rarr; deliver best draft + note unresolved issues</div>
+
+      <p>Right now this lives as five sentences in <code>run-pipeline.md</code>. Today it becomes a real cap that can't silently be skipped or extended.</p>
+
+      <h3>Build it</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>Update run-pipeline.md so the draft &rarr; antagonist resolve step is an explicit, hard-capped loop, not a prose instruction:
+
+1. Run draft, then antagonist.
+2. If PASS &rarr; deliver, done.
+3. If FAIL &rarr; feed the antagonist's specific failures back to draft, re-run draft (revision 1), re-run antagonist.
+4. If still FAIL after revision 1 &rarr; one more round (revision 2) &mdash; hard cap, no exceptions.
+5. If still FAIL after revision 2 &rarr; deliver the best draft so far, with a visible note: "Pipeline: 2 revisions attempted, X issues remain unresolved: [list]."
+
+Write this as numbered, unambiguous steps with the cap stated as a number (2), not a word like "a few." Also log the revision count to audit.jsonl from Exercise 2.</code></pre>
+      </div>
+
+      <h3>Test it</h3>
+      <p>Run your 5 eval cases from Step 0 again. Confirm:</p>
+      <div class="step-list">
+        <div class="step"><div class="step-num">1</div><div class="step-body">The clean baseline case still passes on the first round &mdash; no regression.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">At least one case (try the adversarial one) triggers a FAIL &rarr; revision &rarr; re-check, and you can see it happen.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">If you can force two FAILs in a row, confirm it stops at round 2 and delivers with a clear unresolved-issues note &mdash; it does not loop a third time.</div></div>
+      </div>
+
+      <div class="callout green"><strong>This is the exercise that matters most tonight.</strong> A pipeline that retries forever, or skips its own evaluator under pressure, is the kind of thing that quietly burns a company's API budget or ships a bad plan to a real student. Today yours can't do either.</div>
+
+      <h3>Commit</h3>
+      <div class="code-block">
+        <button class="copy-btn">Copy</button>
+        <pre><code>git add participants/sammpentz-commits/
+git commit -m "Session 5: hard-capped validation-retry loop, structured errors, audit log"
+git push</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- WRAP UP -->
+  <div class="section" id="wrap">
+    <div class="section-header">
+      <div class="part-label">Wrap-up</div>
+      <h2>Before you close out tonight</h2>
+    </div>
+    <div class="section-body">
+
+      <div class="artifact-checklist">
+        <h3>Tonight's Checklist</h3>
+        <ul>
+          <li><code>participants/sammpentz-commits/artifacts/evals/cases.md</code> &mdash; 5 eval cases (grow to 10&ndash;20 before Session 6)</li>
+          <li><code>participants/sammpentz-commits/.claude/hooks/check-study-block.sh</code> &mdash; PreToolUse hook, tested both directions</li>
+          <li><code>participants/sammpentz-commits/.claude/hooks/log-study-plan.sh</code> &mdash; PostToolUse audit hook</li>
+          <li><code>.claude/settings.json</code> &mdash; both hooks wired in with matchers</li>
+          <li>Research agent returns structured <code>schema</code> / <code>permanent</code> errors with real hints</li>
+          <li><code>run-pipeline.md</code> &mdash; hard-capped 2-revision validation-retry loop</li>
+          <li>Eval set re-run post-hardening &mdash; no regressions on the clean baseline case</li>
+        </ul>
+      </div>
+
+      <div class="next-up">
+        <div class="label">Next &mdash; Session 6</div>
+        <p><strong>Connectors &amp; MCP</strong> &nbsp;&middot;&nbsp; Right now your pipeline runs on data you paste in by hand. Next session you connect it to <em>real</em> Planana data &mdash; your Postgres database and Google Calendar &mdash; both consuming an existing MCP server and possibly building your own for something Planana doesn't have a public connector for yet.</p>
+        <p style="margin-top: 10px;"><strong>The PreToolUse hook you wrote today doesn't go away</strong> &mdash; it will automatically guard those new live connections too, since it's matched on the tool call shape, not on whether the data is real or pasted-in.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const code = btn.nextElementSibling.querySelector('code');
+      navigator.clipboard.writeText(code.innerText.trim()).then(() => {
+        btn.textContent = 'Copied';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1800);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
