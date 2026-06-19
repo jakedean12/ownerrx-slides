@@ -453,19 +453,23 @@ git push</code></pre>
   <div class="section" id="quickhits">
     <div class="section-header">
       <div class="part-label">Part 4 · ~10 min</div>
-      <h2>Quick Hits — Three Things That Trip Everyone Up</h2>
+      <h2>Quick Hits — Handy Things to Know</h2>
     </div>
     <div class="section-body">
 
       <table>
         <tr><th>Thing</th><th>What it actually is</th></tr>
         <tr>
-          <td><strong>Glob vs Grep</strong></td>
-          <td><strong>Glob</strong> finds files by name — <code>*.md</code> finds all markdown files. <strong>Grep</strong> finds text inside files — <code>grep "risk"</code> searches the content. Completely different tools. When Claude runs five searches that should have been one, it's almost always using the wrong one.</td>
-        </tr>
-        <tr>
           <td><strong>/clear vs new session</strong></td>
           <td><code>/clear</code> drops the conversation but keeps CLAUDE.md and Skills loaded — faster, still a clean slate. A new session (<code>exit</code> then <code>claude</code>) re-reads everything from scratch. Use <code>/clear</code> when context feels cluttered. Use a new session when something feels fundamentally wrong.</td>
+        </tr>
+        <tr>
+          <td><strong>Shift+Tab to switch modes</strong></td>
+          <td>Cycles Claude between auto-accepting edits and Plan Mode, where it proposes a plan and waits for your okay before touching any files. Use Plan Mode for anything risky or unfamiliar; switch back to move fast once you trust what it's doing.</td>
+        </tr>
+        <tr>
+          <td><strong>Esc to interrupt</strong></td>
+          <td>Stops Claude mid-task. If it's heading down the wrong path, don't wait for it to finish — hit Esc and redirect right away.</td>
         </tr>
         <tr>
           <td><strong>Headless mode</strong></td>
