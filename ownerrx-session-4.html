@@ -42,7 +42,7 @@
   .step-list { display: flex; flex-direction: column; gap: 14px; margin: 14px 0; }
   .step { display: flex; gap: 14px; align-items: flex-start; }
   .step-num { flex-shrink: 0; width: 26px; height: 26px; background: #7c3aed; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 1px; }
-  .step-body { flex: 1; font-size: 15px; color: #334155; line-height: 1.6; }
+  .step-body { flex: 1; min-width: 0; font-size: 15px; color: #334155; line-height: 1.6; }
   .step-body strong { color: #0f172a; }
   .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
   table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
@@ -75,12 +75,11 @@
 <div class="header">
   <div class="kicker">OwnerRx Internship Cohort · Session 4 of 11</div>
   <h1>Agent Architectures + Loop Mechanics</h1>
-  <p>Vocab Warm-Up &nbsp;·&nbsp; Partners &nbsp;·&nbsp; Capstone Selection &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Subagents &nbsp;·&nbsp; Pipelines &nbsp;·&nbsp; Antagonist Evaluators</p>
+  <p>Vocab Warm-Up &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Subagents &nbsp;·&nbsp; Pipelines &nbsp;·&nbsp; Antagonist Evaluators</p>
 </div>
 
 <div class="toc">
   <a href="#vocab">Vocab Warm-Up</a>
-  <a href="#partners">Partners</a>
   <a href="#shareback">Shareback</a>
   <a href="#primitives">Primitives</a>
   <a href="#skills">Skills</a>
@@ -95,7 +94,7 @@
 
   <div class="section" id="vocab">
     <div class="section-header">
-      <div class="part-label">Warm-Up · before Partners</div>
+      <div class="part-label">Warm-Up · 10 min</div>
       <h2>Vocab Warm-Up: API, CRM, CSV &amp; More</h2>
       <div class="subtitle">The words your sponsors keep using — and exactly where each one shows up in your own capstone.</div>
     </div>
@@ -133,30 +132,6 @@
       <div class="callout blue"><strong>In this room:</strong> Sophie's Rust Proof agent reads straight out of Austin's CRM to find warm referral leads nobody's followed up on yet.</div>
 
       <div class="callout green"><strong>How these connect:</strong> a CRM is really just a database with a friendly front-end built for salespeople. If it has an API, an agent can read it live. If it doesn't, you're stuck exporting CSVs by hand — exactly the situation Billymurn and Henry are in with Google and Meta Ads today.</div>
-    </div>
-  </div>
-
-  <div class="section" id="partners">
-    <div class="section-header">
-      <div class="part-label">Opening · 20 min</div>
-      <h2>Partner Assignment + Capstone Selection</h2>
-      <div class="subtitle">You heard from all the business owners. Now you decide what you're building — and who you're building it with.</div>
-    </div>
-    <div class="section-body">
-      <h3>Partners</h3>
-      <p>Jake announces partner assignments. Every capstone is a two-person project. Partners were matched based on company interest and background — you'll work together from today through the final demo.</p>
-      <div class="callout blue"><strong>How the repo works for pairs:</strong> Each person keeps their own participant folder for their individual learning record (<code>about.md</code>, <code>operator-log.md</code>, <code>progress.md</code>). One partner is the <strong>capstone lead</strong> — all shared build artifacts (<code>pipeline/</code>, <code>evals/</code>, <code>agents/</code>, deployed code) live in the lead's folder. Both partners commit there during build sessions.</div>
-      <div class="divider"></div>
-      <h3>Capstone selection</h3>
-      <p>Each pair states their capstone in one sentence:</p>
-      <div class="callout"><em>"We're building an agent that [does what] for [company name] to solve [the problem]."</em></div>
-      <p>If deciding between two options, use this tiebreaker:</p>
-      <div class="step-list">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Which problem is more repetitive?</strong> The best agents automate something that happens weekly. Pick the higher-frequency problem.</div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Which company gave you more data to work with?</strong> An agent with no real data isn't really an agent.</div></div>
-        <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Which problem can you define "done" for in 3 weeks?</strong> Smaller and shippable beats ambitious and incomplete.</div></div>
-      </div>
-      <div class="callout green"><strong>Once you've said it out loud — that's your capstone.</strong> Write it in one sentence right now. This is the first line of your <code>capstone.md</code>, which you'll create in homework tonight.</div>
     </div>
   </div>
 
