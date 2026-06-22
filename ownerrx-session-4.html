@@ -75,10 +75,11 @@
 <div class="header">
   <div class="kicker">OwnerRx Internship Cohort · Session 4 of 11</div>
   <h1>Agent Architectures + Loop Mechanics</h1>
-  <p>Partners &nbsp;·&nbsp; Capstone Selection &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Subagents &nbsp;·&nbsp; Pipelines &nbsp;·&nbsp; Antagonist Evaluators</p>
+  <p>Vocab Warm-Up &nbsp;·&nbsp; Partners &nbsp;·&nbsp; Capstone Selection &nbsp;·&nbsp; Skills &nbsp;·&nbsp; Subagents &nbsp;·&nbsp; Pipelines &nbsp;·&nbsp; Antagonist Evaluators</p>
 </div>
 
 <div class="toc">
+  <a href="#vocab">Vocab Warm-Up</a>
   <a href="#partners">Partners</a>
   <a href="#shareback">Shareback</a>
   <a href="#primitives">Primitives</a>
@@ -91,6 +92,49 @@
 </div>
 
 <div class="content">
+
+  <div class="section" id="vocab">
+    <div class="section-header">
+      <div class="part-label">Warm-Up · before Partners</div>
+      <h2>Vocab Warm-Up: API, CRM, CSV &amp; More</h2>
+      <div class="subtitle">The words your sponsors keep using — and exactly where each one shows up in your own capstone.</div>
+    </div>
+    <div class="section-body">
+      <p>Before we get into architecture, a quick pass on five terms you'll keep hearing from sponsors and from each other. Each one connects directly to a capstone already in this room.</p>
+
+      <h3>CSV — Comma-Separated Values</h3>
+      <p>A plain text file that stores rows and columns of data — like a spreadsheet stripped down to just the values, no formulas, no colors, nothing fancy.</p>
+      <div class="callout">Think of a grocery list where each item's details are separated by commas instead of living in spreadsheet cells. It's about as basic as data gets — which is exactly why almost any program on earth can open one.</div>
+      <div class="callout blue"><strong>In this room:</strong> Billymurn and Henry's Mackenzie agent starts with two CSV exports — one from Google Ads, one from Meta Ads — that a human downloads by hand before the agent ever sees them.</div>
+
+      <div class="divider"></div>
+      <h3>Database</h3>
+      <p>A structured place software stores data so it can search and retrieve it instantly — built so a program can ask "find me every record where X" and get an answer in milliseconds, instead of reading a flat file top to bottom.</p>
+      <div class="callout">A CSV is one long pile of paper. A database is a filing cabinet with labeled folders and a librarian who already knows exactly which folder to grab.</div>
+      <div class="callout blue"><strong>In this room:</strong> Joseph's Lumina agent stores years of past-performance write-ups in a vector database so it can instantly pull the relevant ones for a new RFI. Josh's version does the same job with Supabase.</div>
+
+      <div class="divider"></div>
+      <h3>API — Application Programming Interface</h3>
+      <p>How one piece of software asks another piece of software for information automatically — no human downloading a file or uploading it somewhere else in between.</p>
+      <div class="callout">A waiter takes your order straight to the kitchen. You never see how the kitchen works — you just get your food back, the same way, every time. An API is that defined hand-off between two systems.</div>
+      <div class="callout warn"><strong>Watch for this:</strong> if a "connection" between two systems actually means someone manually exports a CSV and uploads it somewhere else, that's not an API — that's a file transfer wearing an API's clothes. Billymurn and Henry's CSV-export step is the manual version of what an API would do automatically.</div>
+      <div class="callout blue"><strong>In this room:</strong> Joseph and Josh's agent calls the <strong>Claude API</strong> directly — their code asks Claude's model for a draft and gets one back automatically, with nobody copy-pasting into a chat window.</div>
+
+      <div class="divider"></div>
+      <h3>JSON</h3>
+      <p>A way of writing data with labels attached, so a computer knows exactly what each value means — not just a pile of words and numbers, but <code>"name": "Austin", "company": "Rust Proof"</code>, every piece tagged.</p>
+      <div class="callout">A luggage tag on every single bag, instead of one big unmarked pile of suitcases.</div>
+      <div class="callout blue"><strong>In this room:</strong> when Joseph and Josh's agent calls the Claude API, what comes back is JSON — labeled data their code can read precisely instead of guessing which word means what.</div>
+
+      <div class="divider"></div>
+      <h3>CRM — Customer Relationship Management</h3>
+      <p>Software that stores every contact, every deal, and a timeline of every interaction with them — one place a business keeps track of who they know and where things stand.</p>
+      <div class="callout">A digital Rolodex that also remembers every call and email you've ever had with each person in it.</div>
+      <div class="callout blue"><strong>In this room:</strong> Sophie's Rust Proof agent reads straight out of Austin's CRM to find warm referral leads nobody's followed up on yet.</div>
+
+      <div class="callout green"><strong>How these connect:</strong> a CRM is really just a database with a friendly front-end built for salespeople. If it has an API, an agent can read it live. If it doesn't, you're stuck exporting CSVs by hand — exactly the situation Billymurn and Henry are in with Google and Meta Ads today.</div>
+    </div>
+  </div>
 
   <div class="section" id="partners">
     <div class="section-header">
