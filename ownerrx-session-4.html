@@ -214,12 +214,11 @@ Quality criteria:
       <p>Each pair creates one skill for their capstone. Work in the capstone lead's folder. This skill should encode a workflow you'll run repeatedly.</p>
 
       <div class="step-list">
-        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Create the skills directory in the capstone lead's folder:</strong>
-          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>cd kp-academy/participants/&lt;capstone-lead-github-username&gt;
-mkdir -p .claude/skills</code></pre></div>
+        <div class="step"><div class="step-num">1</div><div class="step-body"><strong>Open Claude Code from inside your <code>kp-academy</code> clone.</strong> Don't worry about which exact subfolder you're in — you'll tell Claude where to put things in the next step.
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>claude</code></pre></div>
         </div></div>
-        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Open Claude Code and use this prompt:</strong>
-          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>Create a `.claude/skills/[my-use-case].md` skill that does [describe the workflow] when I ask for [describe the trigger phrase]. Include the four parts: context, instructions, output format, and quality criteria.</code></pre></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body"><strong>Use this prompt</strong> (swap in your capstone lead's GitHub username — Claude Code will create the folder and file itself, so there's no path to get wrong):
+          <div class="code-block" style="margin-top:10px;"><button class="copy-btn">Copy</button><pre><code>Create a `.claude/skills/[my-use-case].md` skill inside `participants/[capstone-lead-github-username]/` that does [describe the workflow] when I ask for [describe the trigger phrase]. Include the four parts: context, instructions, output format, and quality criteria.</code></pre></div>
         </div></div>
         <div class="step"><div class="step-num">3</div><div class="step-body"><strong>Read the skill.</strong> Does the description describe a trigger or a task? If a task, ask Claude to rewrite it as a trigger.</div></div>
         <div class="step"><div class="step-num">4</div><div class="step-body"><strong>Test it.</strong> Type the trigger phrase and watch whether Claude applies the skill. If it doesn't fire, ask Claude why.</div></div>
