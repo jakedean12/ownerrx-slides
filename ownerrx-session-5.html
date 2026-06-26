@@ -79,11 +79,13 @@
 
 <nav class="toc">
   <a href="#shareback">Shareback</a>
+  <a href="#breakout">Breakout</a>
   <a href="#what-are-hooks">What Are Hooks</a>
   <a href="#three-hook-types">Three Hook Types</a>
   <a href="#structured-errors">Structured Errors</a>
   <a href="#retry-loops">Retry Loops</a>
   <a href="#hookify">Hookify</a>
+  <a href="#preview-mcp">Preview: Real Data</a>
   <a href="#homework">Homework + What's Next</a>
 </nav>
 
@@ -121,6 +123,71 @@
 
       <div class="callout blue">
         That last question is not rhetorical. The answer is what you're writing a hook for today — and it's the first thing to revisit once real data is in your hands.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION: Breakout Rooms -->
+  <div class="section" id="breakout">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Breakout · 25 min</div>
+      <h2>Breakout: Pipeline Review + Sponsor Prep</h2>
+      <div class="subtitle">Small groups — review your build, then prep questions for your sponsor meeting</div>
+    </div>
+    <div class="section-body">
+      <p>Break into your capstone pairs. Two jobs, two time blocks.</p>
+
+      <h3>Part A — 15 min: Pipeline review</h3>
+      <ul>
+        <li><strong>Walk your partner through your pipeline as it stands.</strong> Not what you planned — what you actually built. Where does data come in? What happens to it? What comes out?</li>
+        <li><strong>What's the weakest link?</strong> The step most likely to break when real data replaces your mock inputs.</li>
+        <li><strong>What does your eval set actually cover?</strong> Is there anything you avoided writing a test for because you didn't know how mock data would behave?</li>
+        <li><strong>Look at your revisit list together.</strong> Are the assumptions you wrote down the real risks — or did you default to the obvious ones and leave the harder ones unnamed?</li>
+      </ul>
+
+      <div class="divider"></div>
+
+      <h3>Part B — 10 min: Sponsor meeting prep</h3>
+      <p>Next week you'll receive real data from your sponsor and have a touchpoint with them. That conversation will go much better if you've already thought through what you need to know. Use the sponsor question list below to draft 3–5 questions specific to your capstone.</p>
+
+      <div class="callout blue">
+        <strong>One good question saves three hours of guessing.</strong> The goal of the sponsor meeting is not to show what you built — it's to learn exactly what you're connecting to so you can build the right thing.
+      </div>
+
+      <h3>Sponsor question list — bring these into your meeting</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Question to ask</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Where does the data actually live?</strong> (Spreadsheet? Database? CRM? Email? An app?)</td>
+            <td>Determines how your agent connects to it — and whether a connector already exists or needs to be built.</td>
+          </tr>
+          <tr>
+            <td><strong>Is there an API?</strong> (A way for software to access it without logging in manually?)</td>
+            <td>If yes, connection is straightforward. If no, you need a workaround. Good to know before Session 6.</td>
+          </tr>
+          <tr>
+            <td><strong>What does the data actually look like?</strong> (Fields, formats, any quirks — missing values, inconsistent naming, duplicates?)</td>
+            <td>Your mock data probably doesn't match. This is the question that most directly updates your revisit list.</td>
+          </tr>
+          <tr>
+            <td><strong>How often does it update?</strong> (Is it a one-time export, or does new data come in regularly?)</td>
+            <td>Affects whether your agent needs to poll for changes or just run once.</td>
+          </tr>
+          <tr>
+            <td><strong>Who controls access, and how do we get credentials when we're ready?</strong></td>
+            <td>Credentials (API keys, logins) take time to provision. Better to ask now than discover it's a two-week IT process during build sprint.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout green">
+        Come back from breakout ready to share your two strongest questions. We'll surface the best ones as a group before moving on.
       </div>
     </div>
   </div>
@@ -514,6 +581,72 @@ root. Wire it into settings.json.</code></pre>
       </div>
 
       <p>As you build out your capstone over the coming sessions, keep a short list of things you keep having to remind Claude about. That list is your hook backlog.</p>
+    </div>
+  </div>
+
+  <!-- SECTION: Preview - How Real Data Connects -->
+  <div class="section" id="preview-mcp">
+    <div class="section-header">
+      <div class="part-label">Session 5 · Preview · 15 min</div>
+      <h2>Preview: How Your Real Data Will Connect</h2>
+      <div class="subtitle">What Session 6 covers — so you walk into sponsor meetings with the right questions already formed</div>
+    </div>
+    <div class="section-body">
+      <p>Right now your agent reads from files you manually dropped into the project folder. That works for building. It's not how a real agent operates. Session 6 covers how to connect your agent to wherever your sponsor's data <em>actually lives</em> — without anyone dropping files by hand.</p>
+
+      <p>The framework is called <strong>MCP (Model Context Protocol)</strong>. The simplest way to think about it: <strong>USB for AI.</strong> Just like USB lets you plug any device into any laptop without custom wiring, MCP lets any AI agent connect to any external tool or data source using a single standard. It was created by Anthropic in 2024 and is now used by OpenAI, Microsoft Copilot, Google, Cursor, and virtually every serious AI platform. You learn it once — it works everywhere, not just Claude.</p>
+
+      <div class="callout blue">
+        Right now your agent's data comes from a file you placed there yourself. After Session 6, it comes from wherever the data actually lives — a CRM, a database, a spreadsheet, an API — automatically.
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>The three ways to connect — always try them in order</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>What it is</th>
+            <th>When to use it</th>
+            <th>How hard</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tier 1 — Pre-built connector</strong></td>
+            <td>Someone already built and published a connector for this tool — Gmail, Google Drive, HubSpot, Slack, GitHub, Notion, Airtable, and hundreds more.</td>
+            <td>First choice, always. Check if one exists before building anything.</td>
+            <td>5-minute install.</td>
+          </tr>
+          <tr>
+            <td><strong>Tier 2 — Custom connector</strong></td>
+            <td>No pre-built one exists, but the tool has an API (a way for software to access it). Claude Code builds the connector for you from the API docs.</td>
+            <td>The tool has an API but no published connector yet.</td>
+            <td>1–4 hours — and Claude does most of the work.</td>
+          </tr>
+          <tr>
+            <td><strong>Tier 3 — Computer Use</strong></td>
+            <td>Claude controls a mouse and keyboard on screen. Literally clicks around the software like a human would.</td>
+            <td>No API at all — legacy software, a locked SaaS, something IT won't expose.</td>
+            <td>Always available, but slower and more expensive. Last resort only.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <strong>The rule:</strong> walk the tiers in order. Never build a custom connector if a pre-built one already exists. Never use Computer Use if there's an API.
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>What tier is your sponsor's data?</h3>
+      <p>You won't know until you ask them. That's exactly what the breakout questions above are for. If your sponsor's data lives in HubSpot, Google Sheets, or Airtable — Tier 1 probably exists and Session 6 is a 5-minute install. If it's locked inside a custom internal tool with no API — you're looking at Tier 3. Knowing which before you show up means you can plan accordingly.</p>
+
+      <div class="callout green">
+        <strong>What to have answered before Session 6:</strong> where the data lives, whether an API exists, what the data looks like, and who grants access. That's it. Everything else Session 6 will walk through live.
+      </div>
     </div>
   </div>
 
