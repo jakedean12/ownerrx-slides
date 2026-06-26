@@ -84,10 +84,22 @@
   <a href="#structured-errors">Structured Errors</a>
   <a href="#retry-loops">Retry Loops</a>
   <a href="#hookify">Hookify</a>
-  <a href="#homework">Homework</a>
+  <a href="#homework">Homework + What's Next</a>
 </nav>
 
 <div class="content">
+
+  <!-- WHERE YOU STAND BANNER -->
+  <div class="section" style="border-color: #7c3aed; border-left: 4px solid #7c3aed;">
+    <div class="section-body">
+      <h3 style="margin-top:0; color:#7c3aed;">Where you stand heading into today</h3>
+      <p>You've spent four sessions building a real capstone — problem statement, approach, architecture, pipeline, and evals. You did all of that <strong>without real sponsor data</strong>, because it wasn't available yet. That was intentional: the goal was to learn the process. You now know the shape of your agent even if you don't know its exact inputs yet.</p>
+      <p><strong>Next week, real data arrives</strong> from your sponsor. When it does, some of what you built will hold up. Some of it will need to change. Today is about putting guardrails in place so that when real data flows through your pipeline for the first time, it can't do anything you haven't explicitly allowed.</p>
+      <div class="callout" style="margin-bottom:0;">
+        Think of today as building the safety net <em>before</em> the tightrope gets real. The hooks, structured errors, and retry loops you write today are what protect you when real inputs expose assumptions your mock data never tested.
+      </div>
+    </div>
+  </div>
 
   <!-- SECTION 1: Homework Shareback -->
   <div class="section" id="shareback">
@@ -97,17 +109,18 @@
       <div class="subtitle">Pairs share out before diving into new material</div>
     </div>
     <div class="section-body">
-      <p>Take a few minutes to discuss these questions with your pair. Be specific — share what actually happened, not what you expected to happen.</p>
+      <p>Take a few minutes to discuss these questions with your pair. Be specific — share what actually happened, not what you expected to happen. Keep in mind that your evals and pipeline were built on mock data, so some of these answers will be "I think so, but I'm not sure" — that's a legitimate answer here.</p>
 
       <ul>
-        <li><strong>Who got their pipeline running end-to-end?</strong> What was the last thing standing between you and a clean run?</li>
-        <li><strong>Who had an antagonist that was too nice?</strong> If your adversarial eval cases were easy to pass, why? What would make them harder?</li>
-        <li><strong>Did any eval case catch a real failure?</strong> Something the agent did wrong that you wouldn't have noticed otherwise?</li>
-        <li><strong>What's the most dangerous thing your agent could accidentally do right now?</strong> Not worst-case hypothetical — most likely real accident, given how your agent actually behaves today.</li>
+        <li><strong>Who got their pipeline running end-to-end?</strong> What was the last thing standing between you and a clean run? Would that blocker still exist with real data, or was it specific to your mock format?</li>
+        <li><strong>Who had an antagonist that was too nice?</strong> If your adversarial eval cases were easy to pass, is that because your agent is good — or because mock data never put it in a genuinely hard situation?</li>
+        <li><strong>Did any eval case catch a real failure?</strong> Something the agent did wrong that you wouldn't have noticed otherwise? Or did mock data make everything feel fine when real data might not?</li>
+        <li><strong>What assumptions did you make about your data format that might not hold?</strong> Column names, value ranges, edge cases — things you picked arbitrarily when building the mock. Name at least one.</li>
+        <li><strong>What's the most dangerous thing your agent could accidentally do right now?</strong> Not worst-case hypothetical — most likely real accident given how your agent actually behaves. Does that answer change when real data is in play?</li>
       </ul>
 
       <div class="callout blue">
-        That last question is not rhetorical. The answer is what you're writing a hook for today.
+        That last question is not rhetorical. The answer is what you're writing a hook for today — and it's the first thing to revisit once real data is in your hands.
       </div>
     </div>
   </div>
@@ -340,6 +353,10 @@ root. Wire it into settings.json.</code></pre>
           <div class="step-body">Run a safe task. Then open <code>audit.jsonl</code> and confirm a new entry appeared with the right timestamp and tool name.</div>
         </div>
       </div>
+
+      <div class="callout warn" style="margin-top: 20px;">
+        <strong>Flag this for next week:</strong> The condition you're blocking today is based on what you know about mock data. Once real sponsor data arrives, open your PreToolUse hook and ask: does this condition still cover the actual dangerous behavior? Real inputs often reveal edge cases that mocks never surfaced — your hook may need to be tightened.
+      </div>
     </div>
   </div>
 
@@ -473,6 +490,10 @@ root. Wire it into settings.json.</code></pre>
 
       <h3>Exercise</h3>
       <p>Each pair wires a validation-retry loop around the riskiest tool in their pipeline — the one where bad output would cause the most downstream harm. Use the structured error format from Part 4 for the schema error response. Commit to the capstone lead's folder when done.</p>
+
+      <div class="callout warn">
+        <strong>Your schema is based on mock data.</strong> The field names, types, and value ranges you validate against today were picked when your data was made up. When real sponsor data arrives next week, this validation loop is the <em>first</em> thing to revisit — real inputs may have different structures, unexpected nulls, or formats you didn't anticipate. The loop won't break, but it may be validating the wrong things. Treat this as version 1.
+      </div>
     </div>
   </div>
 
@@ -516,6 +537,8 @@ root. Wire it into settings.json.</code></pre>
 
       <p>After all four changes are in place, re-run the eval set from Session 4 against the post-hook agent. Confirm that guardrails block what they're supposed to block without breaking any legitimate flows. Commit everything to the capstone lead's folder before the next session.</p>
 
+      <p>Then do one more thing: <strong>write a "revisit list."</strong> Three to five bullets, one per assumption you made based on mock data — a field name you guessed, a value range you invented, a failure mode you couldn't fully test without real inputs. Keep it somewhere in your project folder. This list is what you work through the minute real sponsor data lands.</p>
+
       <div class="divider"></div>
 
       <div class="artifact-checklist">
@@ -525,14 +548,18 @@ root. Wire it into settings.json.</code></pre>
           <li>At least one PostToolUse hook writing to <code>audit.jsonl</code></li>
           <li>One tool updated with structured error categories (retryable, permanent, auth, schema)</li>
           <li>One validation-retry loop wired around a risky tool</li>
+          <li>A written "revisit list" — assumptions built on mock data that need checking when real sponsor data arrives</li>
         </ul>
       </div>
 
       <div class="divider"></div>
 
       <div class="next-up">
-        <div class="label">Next session</div>
-        <p><strong>Session 6 — Connectors + MCP.</strong> Three tiers of reach: built-in connectors, custom MCP servers, and Computer Use. Every pair leaves with at least one real MCP connected to real data.</p>
+        <div class="label">What's coming — the full picture</div>
+        <p style="margin-bottom: 14px;"><strong>Before Session 6, real sponsor data arrives.</strong> This is the first time your agent will see inputs it wasn't designed around. Your job before next session starts: run your pipeline on the real data manually and see what happens. Don't fix everything — just observe. Bring your findings to the session.</p>
+        <p style="margin-bottom: 14px;"><strong>Session 6 — MCP Integration.</strong> MCP (Model Context Protocol) is how you connect your agent to live external data sources — databases, APIs, spreadsheets, third-party tools — without hardcoding anything. Right now your agent reads from files you manually dropped in. After Session 6 it reads from wherever the real data actually lives. Every pair leaves with at least one live MCP connection wired into their capstone.</p>
+        <p style="margin-bottom: 14px;"><strong>Sessions 7–9 — Build Sprints.</strong> Three consecutive sessions of active capstone development against real data. This is where everything you've built in Sessions 1–5 gets stress-tested. Your hooks, your evals, your retry loops — all of it runs against real inputs for the first time. Expect to update your revisit list as you go.</p>
+        <p style="margin-bottom: 0;"><strong>Sessions 10–11 — Demo Prep + Final Presentations.</strong> You'll polish your agent, write a sponsor update, and present a live walkthrough to your sponsor and the cohort. The goal is a working agent your sponsor can actually hand to someone else.</p>
       </div>
     </div>
   </div>
