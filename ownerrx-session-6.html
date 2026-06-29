@@ -80,18 +80,17 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
 <div class="header">
   <div class="kicker">Session 6 of 11 · KP Academy</div>
   <h1>Connectors + MCP</h1>
-  <p>Three Tiers of Reach · Installing MCPs · Building Custom MCPs · Computer Use</p>
+  <p>Three Tiers of Reach · What MCP Is · Schema Design · Computer Use · Map Your Capstone</p>
 </div>
 
 <nav class="toc">
   <a href="#shareback">Shareback</a>
   <a href="#three-tiers">Three Tiers</a>
   <a href="#what-is-mcp">What is MCP</a>
-  <a href="#install-mcp">Install MCP</a>
-  <a href="#build-mcp">Build MCP</a>
+  <a href="#install-mcp">What Install Looks Like</a>
   <a href="#schema-design">Schema Design</a>
   <a href="#computer-use">Computer Use</a>
-  <a href="#decision-tree">Decision Tree</a>
+  <a href="#decision-tree">Map Your Capstone</a>
   <a href="#homework">Homework</a>
 </nav>
 
@@ -121,7 +120,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
   <!-- Section 2: Three Tiers -->
   <div class="section" id="three-tiers">
     <div class="section-header">
-      <div class="part-label">20 min</div>
+      <div class="part-label">12 min</div>
       <h2>The Three Tiers of Reach</h2>
       <div class="subtitle">How to connect Claude to anything outside files and shell</div>
     </div>
@@ -177,7 +176,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
   <!-- Section 3: What is MCP -->
   <div class="section" id="what-is-mcp">
     <div class="section-header">
-      <div class="part-label">20 min</div>
+      <div class="part-label">12 min</div>
       <h2>MCP: What It Is and Why It Won</h2>
       <div class="subtitle">The universal plug for AI agents</div>
     </div>
@@ -228,119 +227,42 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
     </div>
   </div>
 
-  <!-- Section 4: Install MCP -->
+  <!-- Section 4: What Install Looks Like -->
   <div class="section" id="install-mcp">
     <div class="section-header">
-      <div class="part-label">35 min</div>
-      <h2>Install Your First MCP</h2>
-      <div class="subtitle">Each pair picks one connector based on their capstone and gets real data flowing</div>
+      <div class="part-label">8 min</div>
+      <h2>What the Install Actually Looks Like</h2>
+      <div class="subtitle">You won't run this today — but you'll know exactly what to run when real data arrives</div>
     </div>
     <div class="section-body">
-      <p>Each pair picks one MCP based on their capstone. Common choices:</p>
-      <ul>
-        <li><strong>GitHub</strong> — code and repos</li>
-        <li><strong>Gmail</strong> — email</li>
-        <li><strong>Supabase</strong> — database</li>
-        <li><strong>Google Drive</strong> — documents</li>
-        <li><strong>Slack</strong> — notifications</li>
-        <li><strong>HubSpot</strong> — CRM</li>
-        <li><strong>Notion</strong> — wiki</li>
-      </ul>
+      <p>Installing a Tier 1 MCP is one command. Here's what it looks like for GitHub:</p>
 
-      <h3>Example: GitHub MCP</h3>
       <div class="code-block">
         <button class="copy-btn" onclick="copyCode(this)">Copy</button>
         <pre><code>claude mcp add github -- npx -y @modelcontextprotocol/server-github</code></pre>
       </div>
-      <p>Authenticate when prompted. Generate a token at <strong>github.com → Settings → Developer settings → Personal access tokens</strong>.</p>
 
-      <h3>Token Hygiene Rules</h3>
+      <p>You run it, authenticate when prompted, restart Claude Code, and your agent can now read and write to GitHub. That's the whole install. Every Tier 1 MCP follows the same pattern — one command, one auth step, done.</p>
+
+      <p>If no pre-built MCP exists for your sponsor's tool but the tool has an API, you go Tier 2: you give Claude Code the API docs and say "build me a connector that wraps these three operations." Claude Code writes the server. You add it the same way. You don't write the MCP code yourself.</p>
+
+      <div class="callout blue">
+        The reason you're not installing today: you don't know yet what you're connecting to. The exercise at the end of this session will get you that answer — so you know exactly which command to run the minute real data arrives.
+      </div>
+
+      <h3>Token hygiene — three rules that matter</h3>
       <ul>
-        <li>Generate with <strong>minimum scopes</strong> the MCP actually needs. Read-only research doesn't need repo-write.</li>
-        <li><strong>Never paste the token into a file tracked by git.</strong> Use an env var or the MCP config file (which should be in <code>.gitignore</code>).</li>
-        <li><strong>Write it to a password manager immediately.</strong> You'll need to rotate in 90 days.</li>
+        <li><strong>Minimum scopes only.</strong> If the MCP only needs to read data, don't give it write access. A token with fewer permissions does less damage if it leaks.</li>
+        <li><strong>Never paste a token into a file tracked by git.</strong> Use an environment variable or a config file that's in <code>.gitignore</code>. Tokens committed to GitHub are compromised within minutes.</li>
+        <li><strong>Write it to a password manager immediately.</strong> Tokens expire and need rotating. If it's not saved, you'll lose it.</li>
       </ul>
-
-      <div class="divider"></div>
-
-      <p>Restart Claude Code after installing. Test with:</p>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre><code>List my 5 most recent repos and tell me which ones I haven't committed to in a month.</code></pre>
-      </div>
-
-      <div class="callout green">
-        <strong>Goal:</strong> every pair leaves this block with at least one real MCP connected to real data from their capstone.
-      </div>
-    </div>
-  </div>
-
-  <!-- Section 5: Build MCP -->
-  <div class="section" id="build-mcp">
-    <div class="section-header">
-      <div class="part-label">20 min</div>
-      <h2>Building a Custom MCP</h2>
-      <div class="subtitle">When no pre-built connector exists — Claude Code writes the server</div>
-    </div>
-    <div class="section-body">
-      <p>Most pairs won't hand-write MCP code. Claude Code builds the server; you direct it.</p>
-
-      <h3>The Workflow</h3>
-      <div class="step-list">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-body"><strong>Pick a SaaS tool with an API</strong> — HubSpot, QuickBooks, Airtable, your internal app.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-body"><strong>Find the API docs</strong> for that tool.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-body"><strong>Open Claude Code.</strong></div>
-        </div>
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-body"><strong>Ask Claude:</strong> "Build me an MCP server that wraps these endpoints: [list 3–5 operations you care about]. Use the TypeScript MCP SDK."</div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-body"><strong>Claude Code writes the server.</strong></div>
-        </div>
-        <div class="step">
-          <div class="step-num">6</div>
-          <div class="step-body"><strong>Add it to Claude Code's MCP list.</strong></div>
-        </div>
-        <div class="step">
-          <div class="step-num">7</div>
-          <div class="step-body"><strong>Run a task that uses the new connector.</strong></div>
-        </div>
-      </div>
-
-      <h3>Minimal TypeScript MCP Example</h3>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre><code>import { Server } from "@modelcontextprotocol/sdk/server";
-
-const server = new Server({ name: "my-crm", version: "1.0.0" });
-
-server.setRequestHandler("tools/list", async () => ({
-  tools: [{
-    name: "get_customer",
-    description: "Fetch a customer by ID from our CRM",
-    inputSchema: { type: "object", properties: { id: { type: "string" } } }
-  }]
-}));
-
-server.connect();</code></pre>
-      </div>
     </div>
   </div>
 
   <!-- Section 6: Schema Design -->
   <div class="section" id="schema-design">
     <div class="section-header">
-      <div class="part-label">15 min</div>
+      <div class="part-label">8 min</div>
       <h2>Tool Schema Design</h2>
       <div class="subtitle">The schema is your prompt to Claude — write it like one</div>
     </div>
@@ -392,7 +314,7 @@ server.connect();</code></pre>
   <!-- Section 7: Computer Use -->
   <div class="section" id="computer-use">
     <div class="section-header">
-      <div class="part-label">15 min</div>
+      <div class="part-label">7 min</div>
       <h2>Computer Use</h2>
       <div class="subtitle">Tier 3 — when there's no API and no MCP</div>
     </div>
@@ -419,15 +341,16 @@ server.connect();</code></pre>
     </div>
   </div>
 
-  <!-- Section 8: Decision Tree -->
+  <!-- Section 8: Decision Tree + Map Your Capstone -->
   <div class="section" id="decision-tree">
     <div class="section-header">
-      <div class="part-label">5 min</div>
-      <h2>The Integration Decision Tree</h2>
-      <div class="subtitle">One question at a time — stop when you have an answer</div>
+      <div class="part-label">18 min</div>
+      <h2>Map Your Capstone — What Connects to What</h2>
+      <div class="subtitle">Walk the decision tree for your own project and write down the answer</div>
     </div>
     <div class="section-body">
-      <p>When you need Claude to touch something outside files and shell:</p>
+      <p>When you need Claude to touch something outside files and shell, walk these questions in order. Stop at the first yes.</p>
+
       <div class="decision-tree">
         <div class="dt-step">
           <div class="dt-num">1</div>
@@ -447,8 +370,49 @@ server.connect();</code></pre>
         </div>
         <div class="dt-step">
           <div class="dt-num">5</div>
-          <div class="dt-body">Does it need to run <strong>24/7, not just when you're at your laptop</strong>? <span class="dt-arrow">→</span> That's Session 7 (deployment).</div>
+          <div class="dt-body">Does it need to run <strong>24/7, not just when you're at your laptop</strong>? <span class="dt-arrow">→</span> That's the build sprint (deployment).</div>
         </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Exercise — 12 min · Do this now</h3>
+      <p>Open your <code>capstone.md</code>. Answer the four questions below for your project. Write the answers in a new file at <code>artifacts/mcp-plan.md</code> in your capstone lead's folder. You'll share out when we reconvene.</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Why it matters</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>What external system does your agent need to read from? (Name it specifically — HubSpot, Google Drive, a folder of CSV files, etc.)</td>
+            <td>You can't pick a connector until you know exactly what you're connecting to.</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Does that system have an API? (If you don't know — write "unknown, need to ask sponsor.")</td>
+            <td>Determines whether you're at Tier 1/2 or Tier 3.</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>Is there a pre-built MCP for it? (Search: "MCP [tool name]" — if it exists, name it. If not, write "Tier 2 custom.")</td>
+            <td>Tier 1 takes 5 minutes. Tier 2 takes a few hours. Knowing which saves you from building something that already exists.</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>What's one question you need answered by your sponsor before you can install it?</td>
+            <td>This question goes on your sponsor meeting prep list and gets answered before the next session.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout green">
+        When we share out: each group states their external system, their tier, and their one blocking question. That's it. Three sentences max. You leave today knowing exactly what to install the minute real data lands.
       </div>
     </div>
   </div>
@@ -458,34 +422,27 @@ server.connect();</code></pre>
     <div class="section-header">
       <div class="part-label">Homework</div>
       <h2>Session 6 Homework</h2>
-      <div class="subtitle">Run the skill, connect real data, document what you built</div>
+      <div class="subtitle">Two things — one you can do now, one you do when real data arrives</div>
     </div>
     <div class="section-body">
-      <p>Run <code>/kp-session-6-homework</code> — or type <strong>"start kp session 6 homework"</strong> if the slash command doesn't fire.</p>
+      <p><strong>Thing 1 — do before next session:</strong> Contact your sponsor and get answers to the four questions in your <code>mcp-plan.md</code>. Specifically: where the data lives, whether there's an API, and who controls access. These answers unblock the install.</p>
 
-      <p>The skill will:</p>
-      <ul>
-        <li>Recommend the right MCP for your capstone</li>
-        <li>Walk through install and auth</li>
-        <li>Run one real query on your business data</li>
-        <li>Scaffold a custom MCP spec for any gap it identifies</li>
-      </ul>
+      <p><strong>Thing 2 — do the moment real data arrives:</strong> Run the install command for the MCP you identified today. Authenticate. Run one real query against your capstone data and save the output to <code>artifacts/mcp-wins.md</code>. If no pre-built MCP exists, use Claude Code to build a custom one — give it the API docs and the three operations you need.</p>
 
       <div class="divider"></div>
 
       <div class="artifact-checklist">
         <h3>Artifact Checklist</h3>
         <ul>
-          <li>At least one MCP installed, authenticated, and returning real data</li>
-          <li>One real query transcript saved to <code>artifacts/mcp-wins.md</code> in the capstone lead's folder</li>
-          <li><code>custom-mcp-spec.md</code> if a gap was identified (save to capstone lead's folder)</li>
-          <li><code>tool-contracts.md</code> — one tool contract per connector (tool name, auth method, allowed actions, forbidden actions, expected schema, failure/retry behavior)</li>
+          <li><code>artifacts/mcp-plan.md</code> — the four-question answer from today's exercise (should already be done)</li>
+          <li>Sponsor questions answered and noted in <code>mcp-plan.md</code> before next session</li>
+          <li>Once real data is in hand: MCP installed, authenticated, one real query run, output saved to <code>artifacts/mcp-wins.md</code></li>
         </ul>
       </div>
 
       <div class="next-up">
         <div class="label">Next Session</div>
-        <p><strong>Session 7 — Deploy + Security + Audit.</strong> Your agent goes live. Every pair leaves with a deployed URL and an incident response plan written before they need it.</p>
+        <p><strong>Build Sprint 1.</strong> Real data, real pipeline, real results. You'll run your agent on actual sponsor data for the first time — hooks, structured errors, retry loops, and your new MCP connector all active. The revisit list you wrote in Session 5 becomes your starting checklist.</p>
       </div>
     </div>
   </div>
