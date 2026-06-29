@@ -90,7 +90,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
   <a href="#install-mcp">What Install Looks Like</a>
   <a href="#schema-design">Schema Design</a>
   <a href="#computer-use">Computer Use</a>
-  <a href="#decision-tree">Map Your Capstone</a>
+  <a href="#decision-tree">Decision Tree</a>
   <a href="#homework">Homework</a>
 </nav>
 
@@ -341,12 +341,12 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
     </div>
   </div>
 
-  <!-- Section 8: Decision Tree + Map Your Capstone -->
+  <!-- Section 8: Decision Tree -->
   <div class="section" id="decision-tree">
     <div class="section-header">
-      <div class="part-label">18 min</div>
-      <h2>Map Your Capstone — What Connects to What</h2>
-      <div class="subtitle">Walk the decision tree for your own project and write down the answer</div>
+      <div class="part-label">10 min</div>
+      <h2>The Integration Decision Tree</h2>
+      <div class="subtitle">One question at a time — stop when you have an answer</div>
     </div>
     <div class="section-body">
       <p>When you need Claude to touch something outside files and shell, walk these questions in order. Stop at the first yes.</p>
@@ -374,46 +374,45 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
         </div>
       </div>
 
+      <div class="callout blue">
+        You can't walk this tree for your own capstone yet — you don't know what tools your sponsor uses or whether they have an API. That's what sponsor meetings are for. The questions you ask in that meeting map directly to these five steps.
+      </div>
+
       <div class="divider"></div>
 
-      <h3>Exercise — 12 min · Do this now</h3>
-      <p>Open your <code>capstone.md</code>. Answer the four questions below for your project. Write the answers in a new file at <code>artifacts/mcp-plan.md</code> in your capstone lead's folder. You'll share out when we reconvene.</p>
+      <h3>What to ask your sponsor</h3>
+      <p>When real data arrives and you meet with your sponsor, these are the five questions that tell you where you land on the tree:</p>
 
       <table>
         <thead>
           <tr>
-            <th>#</th>
             <th>Question</th>
-            <th>Why it matters</th>
+            <th>What the answer tells you</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>1</strong></td>
-            <td>What external system does your agent need to read from? (Name it specifically — HubSpot, Google Drive, a folder of CSV files, etc.)</td>
-            <td>You can't pick a connector until you know exactly what you're connecting to.</td>
+            <td><strong>Where does your data actually live?</strong> (A spreadsheet? A CRM? An internal app? Email?)</td>
+            <td>Names the system you're connecting to.</td>
           </tr>
           <tr>
-            <td><strong>2</strong></td>
-            <td>Does that system have an API? (If you don't know — write "unknown, need to ask sponsor.")</td>
-            <td>Determines whether you're at Tier 1/2 or Tier 3.</td>
+            <td><strong>Does that system have an API?</strong> (A way for software to access it without logging in manually?)</td>
+            <td>Yes → Tier 1 or 2. No → Tier 3.</td>
           </tr>
           <tr>
-            <td><strong>3</strong></td>
-            <td>Is there a pre-built MCP for it? (Search: "MCP [tool name]" — if it exists, name it. If not, write "Tier 2 custom.")</td>
-            <td>Tier 1 takes 5 minutes. Tier 2 takes a few hours. Knowing which saves you from building something that already exists.</td>
+            <td><strong>What does the data actually look like?</strong> (Fields, formats, any quirks?)</td>
+            <td>Tells you what to validate and what your schema needs to handle.</td>
           </tr>
           <tr>
-            <td><strong>4</strong></td>
-            <td>What's one question you need answered by your sponsor before you can install it?</td>
-            <td>This question goes on your sponsor meeting prep list and gets answered before the next session.</td>
+            <td><strong>How often does it update?</strong> (One-time export, or new data coming in regularly?)</td>
+            <td>Affects whether the agent runs once or needs to poll for changes.</td>
+          </tr>
+          <tr>
+            <td><strong>Who controls access, and how do we get credentials?</strong></td>
+            <td>Tokens take time to provision — find out now, not during the build sprint.</td>
           </tr>
         </tbody>
       </table>
-
-      <div class="callout green">
-        When we share out: each group states their external system, their tier, and their one blocking question. That's it. Three sentences max. You leave today knowing exactly what to install the minute real data lands.
-      </div>
     </div>
   </div>
 
@@ -425,18 +424,17 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
       <div class="subtitle">Two things — one you can do now, one you do when real data arrives</div>
     </div>
     <div class="section-body">
-      <p><strong>Thing 1 — do before next session:</strong> Contact your sponsor and get answers to the four questions in your <code>mcp-plan.md</code>. Specifically: where the data lives, whether there's an API, and who controls access. These answers unblock the install.</p>
+      <p><strong>Before next session:</strong> Ask your sponsor the five questions from the decision tree section. You need to know where the data lives, whether there's an API, and who controls access. Write the answers in a file called <code>artifacts/mcp-plan.md</code> in your capstone lead's folder. These answers tell you exactly which tier you're in and which MCP to install.</p>
 
-      <p><strong>Thing 2 — do the moment real data arrives:</strong> Run the install command for the MCP you identified today. Authenticate. Run one real query against your capstone data and save the output to <code>artifacts/mcp-wins.md</code>. If no pre-built MCP exists, use Claude Code to build a custom one — give it the API docs and the three operations you need.</p>
+      <p><strong>When real data arrives:</strong> Run the install command for the MCP that matches your sponsor's tool. Authenticate, restart Claude Code, run one real query, and save the output to <code>artifacts/mcp-wins.md</code>. If no pre-built MCP exists for your sponsor's tool, give Claude Code the API docs and the three operations you need — it builds the connector for you.</p>
 
       <div class="divider"></div>
 
       <div class="artifact-checklist">
         <h3>Artifact Checklist</h3>
         <ul>
-          <li><code>artifacts/mcp-plan.md</code> — the four-question answer from today's exercise (should already be done)</li>
-          <li>Sponsor questions answered and noted in <code>mcp-plan.md</code> before next session</li>
-          <li>Once real data is in hand: MCP installed, authenticated, one real query run, output saved to <code>artifacts/mcp-wins.md</code></li>
+          <li><code>artifacts/mcp-plan.md</code> — sponsor's answers to the five data questions</li>
+          <li>Once real data is in hand: MCP installed, authenticated, one real query run, saved to <code>artifacts/mcp-wins.md</code></li>
         </ul>
       </div>
 
