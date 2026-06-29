@@ -79,15 +79,15 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
 <div class="header">
   <div class="kicker">Session 7 of 11 &middot; KP Academy</div>
   <h1>Deploy + Security + Audit</h1>
-  <p>Vercel &middot; Railway &middot; Supabase &middot; Security Essentials &middot; Incident Response</p>
+  <p>MCP Review &middot; Vercel &middot; Railway &middot; Supabase &middot; Security Essentials &middot; Incident Response</p>
 </div>
 
 <!-- TABLE OF CONTENTS -->
 <nav class="toc">
+  <a href="#mcp-review">MCP Review</a>
   <a href="#why-deploy">Why Deploy</a>
   <a href="#modern-trio">Modern Trio</a>
   <a href="#big-three">Big Three</a>
-  <a href="#deploy-it">Deploy It</a>
   <a href="#security">Security</a>
   <a href="#incident-response">Incident Response</a>
   <a href="#homework">Homework</a>
@@ -95,19 +95,76 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
 
 <div class="content">
 
-  <!-- SECTION 1: WHY DEPLOY -->
-  <div class="section" id="why-deploy">
+  <!-- SECTION 1: MCP REVIEW -->
+  <div class="section" id="mcp-review">
     <div class="section-header">
       <div class="part-label">Part 1 &middot; 10 min</div>
+      <h2>MCP Quick Review</h2>
+      <div class="subtitle">Where we left off &mdash; before we talk about where your agent lives</div>
+    </div>
+    <div class="section-body">
+      <p>Last session covered how your agent connects to the outside world. Quick recap before we move to deployment.</p>
+
+      <h3>MCP = "USB for AI"</h3>
+      <p>MCP (Model Context Protocol) is a universal plug standard. Instead of building a custom connection for every tool, you plug in once and any MCP-compatible service just works &mdash; the same way USB lets you plug any keyboard into any computer.</p>
+
+      <h3>Three Tiers of Reach</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Tier</th>
+            <th>What it is</th>
+            <th>Time to set up</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Tier 1</strong></td>
+            <td>Pre-built MCP &mdash; someone already built the plug (Gmail, Google Drive, Notion, HubSpot)</td>
+            <td>5 minutes</td>
+          </tr>
+          <tr>
+            <td><strong>Tier 2</strong></td>
+            <td>Custom MCP via API &mdash; your sponsor has an API, you build the plug</td>
+            <td>1&ndash;4 hours</td>
+          </tr>
+          <tr>
+            <td><strong>Tier 3</strong></td>
+            <td>Computer Use &mdash; Claude watches and controls the screen directly</td>
+            <td>Last resort only</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>5 Questions to Ask Your Sponsor</h3>
+      <p>Before you can connect your agent to real data, you need answers to these:</p>
+      <ol>
+        <li><strong>Where does the data live?</strong> (spreadsheet, CRM, database, email)</li>
+        <li><strong>Is there an API?</strong> (if yes &rarr; Tier 2)</li>
+        <li><strong>What format is the data in?</strong> (what columns, fields, how it's structured)</li>
+        <li><strong>How often does it update?</strong> (real-time, daily, weekly)</li>
+        <li><strong>Who controls access?</strong> (do they need to grant permission before you can connect)</li>
+      </ol>
+
+      <div class="callout blue">
+        <strong>Today's bridge:</strong> Last session = how your agent <em>connects</em> to data. Today = where your agent <em>lives</em> once it's doing real work.
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: WHY DEPLOY -->
+  <div class="section" id="why-deploy">
+    <div class="section-header">
+      <div class="part-label">Part 2 &middot; 10 min</div>
       <h2>Why Deploy?</h2>
       <div class="subtitle">The difference between a demo and a product</div>
     </div>
     <div class="section-body">
       <p>Your agent lives in your terminal. That works for interactive tasks. But real agents need to:</p>
       <ul>
-        <li>Run on a schedule — <em>every Monday at 7am, generate the weekly brief</em></li>
-        <li>React to events — <em>intake form submitted &rarr; agent drafts proposal</em></li>
-        <li>Serve a web interface — <em>team asks questions from Slack or browser</em></li>
+        <li>Run on a schedule &mdash; <em>every Monday at 7am, generate the weekly brief</em></li>
+        <li>React to events &mdash; <em>intake form submitted &rarr; agent drafts proposal</em></li>
+        <li>Serve a web interface &mdash; <em>team asks questions from Slack or browser</em></li>
         <li>Scale beyond one laptop</li>
       </ul>
       <p>That means putting it somewhere always-on.</p>
@@ -119,10 +176,10 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
     </div>
   </div>
 
-  <!-- SECTION 2: THE MODERN TRIO -->
+  <!-- SECTION 3: THE MODERN TRIO -->
   <div class="section" id="modern-trio">
     <div class="section-header">
-      <div class="part-label">Part 2 &middot; 40 min</div>
+      <div class="part-label">Part 3 &middot; 25 min</div>
       <h2>The Modern Trio</h2>
       <div class="subtitle">Three platforms handle ~80% of what small-business agents need</div>
     </div>
@@ -132,7 +189,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
       <div class="platform-card">
         <div class="platform-card-header">
           <span class="platform-name">Vercel</span>
-          <span class="platform-time">15 min</span>
+          <span class="platform-time">8 min</span>
         </div>
         <div class="platform-card-body">
           <h3>What it is</h3>
@@ -158,7 +215,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
       <div class="platform-card">
         <div class="platform-card-header">
           <span class="platform-name">Railway</span>
-          <span class="platform-time">15 min</span>
+          <span class="platform-time">8 min</span>
         </div>
         <div class="platform-card-body">
           <h3>What it is</h3>
@@ -193,7 +250,7 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
       <div class="platform-card">
         <div class="platform-card-header">
           <span class="platform-name">Supabase</span>
-          <span class="platform-time">10 min</span>
+          <span class="platform-time">9 min</span>
         </div>
         <div class="platform-card-body">
           <h3>What it is</h3>
@@ -216,10 +273,10 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
     </div>
   </div>
 
-  <!-- SECTION 3: BIG THREE OVERVIEW -->
+  <!-- SECTION 4: BIG THREE OVERVIEW -->
   <div class="section" id="big-three">
     <div class="section-header">
-      <div class="part-label">Part 3 &middot; 20 min</div>
+      <div class="part-label">Part 4 &middot; 15 min</div>
       <h2>The Big Three: AWS, Azure, GCP</h2>
       <div class="subtitle">Know when you'll be forced onto a hyperscaler</div>
     </div>
@@ -256,53 +313,17 @@ td code { font-family: Menlo, monospace; font-size: 12px; background: #f1f5f9; c
     </div>
   </div>
 
-  <!-- SECTION 4: DEPLOY ONE THING -->
-  <div class="section" id="deploy-it">
-    <div class="section-header">
-      <div class="part-label">Part 4 &middot; 40 min</div>
-      <h2>Deploy One Thing</h2>
-      <div class="subtitle">Each pair deploys something &mdash; even a trivial thing &mdash; by end of session</div>
-    </div>
-    <div class="section-body">
-      <p>Work in the capstone lead's folder. Pick one path below and follow it end to end.</p>
-
-      <h3>Path A &mdash; Vercel</h3>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre><code>npm create next-app@latest my-agent-ui
-cd my-agent-ui
-gh repo create my-agent-ui --public --source=. --push
-npx vercel</code></pre>
-      </div>
-
-      <h3>Path B &mdash; Railway</h3>
-      <p>Go to <strong>railway.app</strong> &rarr; sign up with GitHub &rarr; <strong>New Project &rarr; Deploy from GitHub</strong> &rarr; pick your repo &rarr; watch the logs.</p>
-
-      <div class="divider"></div>
-
-      <h3>Environment Variables</h3>
-      <p>Both platforms have a UI for env vars. You can also set them from the Vercel CLI:</p>
-      <div class="code-block">
-        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-        <pre><code>vercel env add ANTHROPIC_API_KEY</code></pre>
-      </div>
-      <div class="security-rule">
-        <strong>Rule: Never put secrets in your code.</strong> Never commit an API key to GitHub. Always use env vars &mdash; on every platform, every time, no exceptions.
-      </div>
-    </div>
-  </div>
-
   <!-- SECTION 5: SECURITY ESSENTIALS -->
   <div class="section" id="security">
     <div class="section-header">
-      <div class="part-label">Part 5 &middot; 30 min</div>
+      <div class="part-label">Part 5 &middot; 25 min</div>
       <h2>Security Essentials</h2>
       <div class="subtitle">Four concrete areas &mdash; do this / don't do that</div>
     </div>
     <div class="section-body">
-      <p>You're now building agents that touch email, CRM, payments, and databases. This section is practical.</p>
+      <p>You're building agents that will touch email, CRM, payments, and databases. This section is practical.</p>
 
-      <h3>1. Token Exposure (10 min)</h3>
+      <h3>1. Token Exposure (8 min)</h3>
       <ul>
         <li>Never commit a token to git. Even private repos &mdash; GitHub scans for them.</li>
         <li>Never paste a token into Claude Code when you could use an env var. Logs get compacted and shared.</li>
@@ -322,7 +343,7 @@ npx vercel</code></pre>
 
       <div class="divider"></div>
 
-      <h3>2. AI-Generated Code Review (7 min)</h3>
+      <h3>2. AI-Generated Code Review (6 min)</h3>
       <p>What to watch for in code Claude writes:</p>
       <ul>
         <li><strong>Silent failures:</strong> <code>try/except: pass</code> swallows errors. Claude sometimes adds these "defensively." They hide real bugs.</li>
@@ -334,7 +355,7 @@ npx vercel</code></pre>
 
       <div class="divider"></div>
 
-      <h3>3. Row Level Security &mdash; Supabase (7 min)</h3>
+      <h3>3. Row Level Security &mdash; Supabase (5 min)</h3>
       <p>RLS is a policy that says even authenticated users only see rows they're allowed to see. Without RLS, any user with valid auth can read every row in your database.</p>
       <div class="callout warn">
         <strong>Default: RLS is OFF on new tables until you turn it on.</strong> Many data leaks happen because someone forgot this.
@@ -452,44 +473,36 @@ using (auth.uid() = user_id);</code></pre>
       <div class="subtitle">Due before Session 8 &middot; Each pair completes together</div>
     </div>
     <div class="section-body">
-      <p>Run <code>/kp-session-7-homework</code> &mdash; or type <strong>"start kp session 7 homework"</strong> if the slash command doesn't fire. Work in the capstone lead's folder.</p>
+      <p>Four tasks. None of them require real data &mdash; you can do all of these with what you have right now.</p>
 
-      <h3>What the skill does</h3>
       <div class="step-list">
         <div class="step">
           <div class="step-num">1</div>
-          <div class="step-body"><strong>Audits your capstone</strong> against Session 8 demo requirements and flags gaps.</div>
+          <div class="step-body"><strong>Run the secret scan.</strong> Run the grep command from the Security section on your capstone repo. If anything comes up, rotate the key immediately and tell Jake. If nothing comes up, save the clean output to <code>artifacts/security-scan.txt</code>.</div>
         </div>
         <div class="step">
           <div class="step-num">2</div>
-          <div class="step-body"><strong>Proposes a minimal deployable slice</strong> &mdash; the smallest thing worth shipping before demo day.</div>
+          <div class="step-body"><strong>Pick your platform.</strong> Write one short paragraph in your capstone notes: which platform would you deploy to (Vercel or Railway) and why, based on what your agent will actually do. Use the criteria from today's session &mdash; be specific.</div>
         </div>
         <div class="step">
           <div class="step-num">3</div>
-          <div class="step-body"><strong>Walks you through the deploy</strong> for your chosen platform (Vercel or Railway), stopping at each step to verify.</div>
+          <div class="step-body"><strong>Write your incident-response plan.</strong> Create <code>artifacts/incident-response.md</code>. Before anything breaks, write down: who you'd contact, what you'd disable first, and the exact message you'd send your sponsor. One paragraph each. Write it now while you're thinking clearly, not during a crisis.</div>
         </div>
         <div class="step">
           <div class="step-num">4</div>
-          <div class="step-body"><strong>Scaffolds your 7-minute demo script</strong> &mdash; saved to <code>artifacts/demo-script.md</code> with both partners' speaking parts marked. Rehearse it as a pair before Session 8.</div>
-        </div>
-        <div class="step">
-          <div class="step-num">5</div>
-          <div class="step-body"><strong>Dry-runs the demo with you once</strong>, timing it and flagging anything that'll break live.</div>
+          <div class="step-body"><strong>Ask your sponsor the 5 MCP questions</strong> from today's review. Write up their answers in <code>mcp-plan.md</code> &mdash; or update it if you've already started. If you can't reach your sponsor yet, write your best guess at the answers and flag each one as TBD.</div>
         </div>
       </div>
 
       <div class="divider"></div>
 
-      <h3>Artifact Checklist</h3>
       <div class="artifact-checklist">
         <h3>Before Session 8, each pair submits:</h3>
         <ul>
-          <li>Something deployed &mdash; a live URL or Railway deployment that runs without your laptop open</li>
-          <li><code>deployment-checklist.md</code> &mdash; env vars set, logs enabled, evals run and passing, rollback path, cost cap</li>
-          <li>Post-change eval re-run: passing</li>
-          <li>Security audit output with critical findings closed (<code>/kp-security-audit</code>)</li>
-          <li><code>artifacts/demo-script.md</code> &mdash; 7-minute demo script with both partners' speaking parts, rehearsed at least once as a pair</li>
-          <li><code>incidents-response.md</code> &mdash; who you page, what you disable, what message you send &mdash; written before anything breaks</li>
+          <li><code>artifacts/security-scan.txt</code> &mdash; clean scan output or documented rotation</li>
+          <li>Platform decision written in capstone notes (Vercel vs. Railway + reason)</li>
+          <li><code>artifacts/incident-response.md</code> &mdash; contact, disable step, sponsor message</li>
+          <li><code>mcp-plan.md</code> &mdash; sponsor's 5 answers (or best guesses flagged TBD)</li>
         </ul>
       </div>
 
@@ -497,7 +510,7 @@ using (auth.uid() = user_id);</code></pre>
 
       <div class="next-up">
         <div class="label">Next Session</div>
-        <p><strong>Session 8 &mdash; Demo Day.</strong> Open build lab then live demos. Every pair gets 7 minutes. Come with something working and a demo you've rehearsed.</p>
+        <p><strong>Session 8 &mdash; Build Sprint 1.</strong> Real data arrives. You'll connect your first MCP, run your agent against live inputs, and start building the thing you'll actually demo. Come with your <code>mcp-plan.md</code> filled out &mdash; that's your build plan.</p>
       </div>
     </div>
   </div>
